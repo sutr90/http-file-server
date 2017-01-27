@@ -22,16 +22,18 @@ void MyServer::stream_http_response(std::ostream &out, outgoing_things outgoing,
     }
     out << "\r\n";
 
-    const int chunk_size = 4096;
+    const int chunk_size = 64*1024;
     char memblock[chunk_size];
     std::ifstream in(file.full_name(), std::ifstream::binary);
     uint64 current = 0;
 
-    while (current < filesize) {
+    while (current < filesize && out.good()) {
         in.read(memblock, chunk_size);
         std::streamsize bytes = in.gcount();
         out.write(memblock, bytes);
         current += bytes;
+        sleep(500);
+        std::cout << "sending";
     }
 
     in.close();
