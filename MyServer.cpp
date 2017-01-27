@@ -3,6 +3,7 @@
 //
 
 #include "MyServer.h"
+#include "throttle.h"
 
 void MyServer::stream_http_response(std::ostream &out, outgoing_things outgoing, std::string &filename) {
     dlib::file file(filename);
@@ -22,17 +23,19 @@ void MyServer::stream_http_response(std::ostream &out, outgoing_things outgoing,
     }
     out << "\r\n";
 
-    const int chunk_size = 64*1024;
+    const uint32 chunk_size = 64*1024;
     char memblock[chunk_size];
     std::ifstream in(file.full_name(), std::ifstream::binary);
     uint64 current = 0;
+
+    throttle t(4, chunk_size);
 
     while (current < filesize && out.good()) {
         in.read(memblock, chunk_size);
         std::streamsize bytes = in.gcount();
         out.write(memblock, bytes);
         current += bytes;
-        sleep(500);
+        t.sleep();
         std::cout << "sending";
     }
 
