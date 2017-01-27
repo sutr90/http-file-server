@@ -14,7 +14,8 @@ using namespace dlib;
 
 enum response_type {
     FILE_NAME,
-    STRING
+    STRING,
+    ERR
 };
 
 struct response {
