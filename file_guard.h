@@ -16,7 +16,7 @@ private:
     dlib::int64 get_current_db_time();
 
 public:
-    file_guard(std::string db_path);
+    file_guard(std::string &db_path);
     void get_file(std::string url, response &response);
 };
 

@@ -79,8 +79,7 @@ void MyServer::on_request(
         response &response
 ) {
     if (incoming.path == "/file_test") {
-        response.type = FILE_NAME;
-        response.response = "D:\\keras.tar.gz";
+        fileguard.get_file(incoming.path, response);
         return;
     }
 
@@ -152,3 +151,5 @@ void MyServer::on_request(
     response.type = STRING;
     response.response = sout.str();
 }
+
+MyServer::MyServer(std::string &db_path) : fileguard(db_path) {}

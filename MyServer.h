@@ -9,6 +9,7 @@
 #include <dlib/dir_nav.h>
 #include <iostream>
 #include <string>
+#include "file_guard.h"
 
 using namespace dlib;
 
@@ -25,6 +26,10 @@ struct response {
 
 class MyServer : public server_http {
 private:
+public:
+    MyServer(std::string &db_path);
+
+private:
     const std::string on_request(
             const incoming_things &incoming,
             outgoing_things &outgoing
@@ -36,6 +41,7 @@ private:
             response &response
     );
 
+    file_guard fileguard;
 
     void stream_http_response(std::ostream &out, outgoing_things outgoing, std::string &filename);
 

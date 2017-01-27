@@ -65,7 +65,7 @@ void file_guard::get_file(std::string url, response &response) {
 
 }
 
-file_guard::file_guard(std::string db_path) : db(db_path) {
+file_guard::file_guard(std::string &db_path) : db(db_path) {
 
 }
 
