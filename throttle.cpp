@@ -1,7 +1,3 @@
-//
-// Created by VF on 27.01.2017.
-//
-
 #include <dlib/misc_api.h>
 #include "throttle.h"
 

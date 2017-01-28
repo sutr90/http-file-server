@@ -1,7 +1,3 @@
-//
-// Created by VF on 27.01.2017.
-//
-
 #ifndef SERVER_THROTTLE_H
 #define SERVER_THROTTLE_H
 

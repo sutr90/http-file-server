@@ -1,7 +1,3 @@
-//
-// Created by VF on 25.01.2017.
-//
-
 #ifndef SERVER_NAMES_H
 #define SERVER_NAMES_H
 
