@@ -1,5 +1,3 @@
-#include <iostream>
-#include <dlib/server.h>
 #include "MyServer.h"
 
 using namespace dlib;
