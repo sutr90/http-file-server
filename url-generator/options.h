@@ -14,5 +14,6 @@ struct options {
 
 options parse_cmd_line(int argc, char **argv);
 
+void validate_option(options &opt);
 
 #endif //PROJECT_OPTINONS_H

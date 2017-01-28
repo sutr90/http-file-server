@@ -5,7 +5,7 @@ using namespace std;
 using namespace dlib;
 
 int main(int argc, char **argv) {
-    parse_cmd_line(argc, argv);
+    options opt = parse_cmd_line(argc, argv);
 
     return 0;
 }

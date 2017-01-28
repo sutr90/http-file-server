@@ -1,4 +1,5 @@
 #include <dlib/cmd_line_parser.h>
+#include <dlib/dir_nav.h>
 #include "options.h"
 
 using namespace dlib;
@@ -30,7 +31,7 @@ options parse_cmd_line(int argc, char **argv) {
         parser.check_incompatible_options("c", "t");
         parser.check_option_arg_range("c", 1, 65536);
 
-        if (parser.number_of_arguments() != 1) {
+        if (parser.number_of_arguments() < 1) {
             cout << "File path is missing" << endl;
             print_usage_and_exit();
         }
@@ -53,7 +54,25 @@ options parse_cmd_line(int argc, char **argv) {
         o.time_limit = 0;
     }
 
+    validate_option(o);
+
     return o;
+}
+
+void validate_option(options &opt) {
+    if (opt.limit_type == dl_limit_type::TIMER && opt.time_limit < 60) {
+        cout << "Minimal time limit is 1 minute" << endl;
+        exit(1);
+    }
+
+    try {
+        file test(opt.file_name);
+        opt.file_name = test.full_name();
+    }
+    catch (file::file_not_found &e) {
+        cout << "File " << opt.file_name << " not found or accessible: " << e.info << endl;
+        exit(1);
+    }
 }
 
 uint32 parse_time(const string &time_string) {
@@ -68,7 +87,7 @@ uint32 parse_time(const string &time_string) {
     int minutes = stoi(time_string.substr(colon + 1));
 
     if (minutes >= 60 || minutes < 0 || hours < 0) {
-        cout << "incorrect time value";
+        cout << "incorrect time value" << endl;
         print_usage_and_exit();
     }
 
