@@ -9,7 +9,7 @@ void MyServer::stream_http_response(std::ostream &out, outgoing_things outgoing,
     dlib::file file(filename);
     uint64 filesize = file.size();
 
-    outgoing.headers["Content-Type"] = "application/force-download";
+    outgoing.headers["Content-Type"] = "application/octet-stream";
     outgoing.headers["Content-Length"] = std::to_string(filesize);
     outgoing.headers["Content-Transfer-Encoding"] = "binary";
     outgoing.headers["Content-Disposition"] = "attachment; filename=\"" + file.name() + "\"";
@@ -63,6 +63,10 @@ void MyServer::on_connect(
             write_http_response(out, outgoing, response.response);
         } else if (response.type == FILE_NAME) {
             stream_http_response(out, outgoing, response.response);
+        }  else if (response.type == FILE_NOT_AVAILABLE) {
+            outgoing.http_return = 404;
+            outgoing.http_return_status = response.response;
+            write_http_response(out, outgoing, response.response);
         }
     }
     catch (http_parse_error &e) {
@@ -78,7 +82,7 @@ void MyServer::on_request(
         outgoing_things &outgoing,
         response &response
 ) {
-    if (incoming.path == "/file_test") {
+    if (incoming.path != "/") {
         fileguard.get_file(incoming.path, response);
         return;
     }
@@ -152,4 +156,4 @@ void MyServer::on_request(
     response.response = sout.str();
 }
 
-MyServer::MyServer(std::string &db_path) : fileguard(db_path) {}
+MyServer::MyServer(std::string db_path) : fileguard(db_path) {}

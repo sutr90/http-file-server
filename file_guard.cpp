@@ -4,15 +4,15 @@
 
 void file_guard::get_file(std::string url, response &response) {
     std::size_t pos = url.find("/");
-    std::string file_id = url.substr(pos);
+    std::string file_id = url.substr(pos+1);
 
     //CREATE TABLE "files" ( `file_id` TEXT UNIQUE, `file_path` TEXT, `limit_type` TEXT DEFAULT 'C', `dl_counter` INTEGER DEFAULT 0, `limit_timestamp` INTEGER, PRIMARY KEY(`file_id`) )
     dlib::statement st2(db, "select * from `files` where `files`.`file_id` = ? COLLATE NOCASE");
     st2.bind(1, file_id);
     st2.exec();
 
-    response.type = ERR;
-    response.response = "404";
+    response.type = FILE_NOT_AVAILABLE;
+    response.response = file_id + " is not available anymore";
 
     if (!st2.move_next()) {
         return;

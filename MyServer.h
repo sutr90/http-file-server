@@ -16,7 +16,7 @@ using namespace dlib;
 enum response_type {
     FILE_NAME,
     STRING,
-    ERR
+    FILE_NOT_AVAILABLE
 };
 
 struct response {
@@ -27,7 +27,7 @@ struct response {
 class MyServer : public server_http {
 private:
 public:
-    MyServer(std::string &db_path);
+    MyServer(std::string db_path);
 
 private:
     const std::string on_request(
