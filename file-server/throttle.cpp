@@ -8,11 +8,13 @@ void throttle::sleep() {
 }
 
 void throttle::set_sleep_time() {
-    speed_limit = speed_limit * 1024*1024;
+    speed_limit = speed_limit * 1024 * 1024;
     float speed_bytes = speed_limit / 8.0f; // speed limit in bytes
     float chunk_count = speed_bytes / chunk_size; // number of chunks per second
     sleep_time = (dlib::uint32) (1000 / chunk_count);
 }
+
+const float throttle::MAX_SPEED = 10.f;
 
 throttle::throttle(float speed_limit_mbit, dlib::uint32 chunk_size_byte) :
         speed_limit(std::max(speed_limit_mbit, MAX_SPEED)),

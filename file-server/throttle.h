@@ -9,7 +9,7 @@ private:
     dlib::uint32 chunk_size;
     dlib::uint32 sleep_time;
     void set_sleep_time();
-    const float MAX_SPEED = 10;
+    static const float MAX_SPEED;
 public:
     throttle(float speed_limit_mbit, dlib::uint32 chunk_size_byte);
     void sleep();
