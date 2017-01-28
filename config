@@ -1,0 +1,8 @@
+db_path=../../server.db
+
+server {
+    port=5000
+    chunk_size=64 #in kB
+    max_speed=8 # float value in Mbit
+    debug=0 # 0/1 -> false/true
+}

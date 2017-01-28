@@ -1,5 +1,5 @@
 #include "MyServer.h"
-#include "throttle.h"
+#include <dlib/dir_nav.h>
 
 void MyServer::stream_http_response(std::ostream &out, outgoing_things outgoing, std::string &filename) {
     dlib::file file(filename);
@@ -19,34 +19,23 @@ void MyServer::stream_http_response(std::ostream &out, outgoing_things outgoing,
     }
     out << "\r\n";
 
-    const uint32 chunk_size = 64 * 1024;
-    char memblock[chunk_size];
     std::ifstream in(file.full_name(), std::ifstream::binary);
     uint64 current = 0;
 
-    throttle t(8, chunk_size);
-
     while (current < filesize && out.good()) {
-        in.read(memblock, chunk_size);
+        in.read(buffer.get(), chunk_size);
         std::streamsize bytes = in.gcount();
-        out.write(memblock, bytes);
+        out.write(buffer.get(), bytes);
         current += bytes;
         t.sleep();
-        std::cout << "sending";
     }
 
     in.close();
 }
 
-void MyServer::on_connect(
-        std::istream &in,
-        std::ostream &out,
-        const std::string &foreign_ip,
-        const std::string &local_ip,
-        unsigned short foreign_port,
-        unsigned short local_port,
-        uint64
-) {
+void
+MyServer::on_connect(std::istream &in, std::ostream &out, const std::string &foreign_ip, const std::string &local_ip,
+                     unsigned short foreign_port, unsigned short local_port, uint64) {
     try {
         incoming_things incoming(foreign_ip, local_ip, foreign_port, local_port);
         outgoing_things outgoing;
@@ -70,11 +59,7 @@ void MyServer::on_connect(
     }
 }
 
-void MyServer::on_request(
-        const incoming_things &incoming,
-        outgoing_things &outgoing,
-        response &response
-) {
+void MyServer::on_request(const incoming_things &incoming,outgoing_things &outgoing,response &response) {
     if (incoming.path != "/") {
         fileguard.get_file(incoming.path, response);
         return;
@@ -84,4 +69,7 @@ void MyServer::on_request(
     response.response = "<html> <body> hello world </body> </html>";
 }
 
-MyServer::MyServer(std::string db_path) : fileguard(db_path) {}
+MyServer::MyServer(std::string db_path) : chunk_size(64 * 1024),
+                                          buffer(new char[chunk_size]),
+                                          t(8, chunk_size),
+                                          fileguard(db_path) {}
