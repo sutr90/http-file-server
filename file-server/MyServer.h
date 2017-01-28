@@ -39,6 +39,7 @@ struct server_config {
 class MyServer : public server_http {
 public:
     MyServer(server_config &config);
+    virtual ~MyServer() {}
 
 private:
     bool debug;
@@ -49,13 +50,14 @@ private:
     file_guard fileguard;
     uint32 chunk_size;
     throttle t;
-    std::unique_ptr<char> buffer;
+    std::unique_ptr<char[]> buffer;
 
     void stream_http_response(std::ostream &out, outgoing_things outgoing, std::string &filename);
 
     virtual void on_connect(std::istream &in, std::ostream &out, const std::string &foreign_ip,
                             const std::string &local_ip, unsigned short foreign_port, unsigned short local_port,
                             uint64);
+
 };
 
 #endif //SERVER_MYSERVER_H
