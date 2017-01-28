@@ -20,14 +20,31 @@ struct response {
     response_type type;
 };
 
+struct server_config {
+    std::string db_path;
+    int port;
+    uint32 chunk_size;
+    float max_speed;
+    bool debug;
+
+    server_config(config_reader &cr) :
+            db_path(cr["db_path"]),
+            port(get_option(cr, "server.port", 5000)),
+            chunk_size((uint32) (get_option(cr, "server.chunk_size", 5000) * 1024)),
+            max_speed(get_option(cr, "server.max_speed", 8.f)),
+            debug(get_option(cr,"server.debug", false))
+    {}
+};
+
 class MyServer : public server_http {
 public:
-    MyServer(std::string db_path);
+    MyServer(server_config &config);
 
 private:
+    bool debug;
     const std::string on_request(const incoming_things &incoming, outgoing_things &outgoing) { return ""; };
 
-    void on_request(const incoming_things &incoming,outgoing_things &outgoing,response &response);
+    void on_request(const incoming_things &incoming, outgoing_things &outgoing, response &response);
 
     file_guard fileguard;
     uint32 chunk_size;

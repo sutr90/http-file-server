@@ -59,7 +59,7 @@ MyServer::on_connect(std::istream &in, std::ostream &out, const std::string &for
     }
 }
 
-void MyServer::on_request(const incoming_things &incoming,outgoing_things &outgoing,response &response) {
+void MyServer::on_request(const incoming_things &incoming, outgoing_things &outgoing, response &response) {
     if (incoming.path != "/") {
         fileguard.get_file(incoming.path, response);
         return;
@@ -69,7 +69,8 @@ void MyServer::on_request(const incoming_things &incoming,outgoing_things &outgo
     response.response = "<html> <body> hello world </body> </html>";
 }
 
-MyServer::MyServer(std::string db_path) : chunk_size(64 * 1024),
-                                          buffer(new char[chunk_size]),
-                                          t(8, chunk_size),
-                                          fileguard(db_path) {}
+MyServer::MyServer(server_config &config) : chunk_size(config.chunk_size),
+                                            buffer(new char[chunk_size]),
+                                            t(8, chunk_size),
+                                            fileguard(config.db_path),
+                                            debug(config.debug) {}
