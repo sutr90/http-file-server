@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.5)
 
 if (WIN32)
     include_directories(D:\\tmp\\dlib)
@@ -6,7 +6,7 @@ if (WIN32)
 endif (WIN32)
 
 if (UNIX)
-    set(DLIB_LIBRARt dlib)
+    set(DLIB_LIBRARY dlib)
 endif (UNIX)
 
 set(MY_LIBS sqlite3)
