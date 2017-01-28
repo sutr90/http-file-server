@@ -25,7 +25,9 @@ std::string register_file(database &db, options &opt) {
     dlib::statement st(db, "insert into `files` values (?, ?, ?, ?, strftime('%s','now')+?)");
     st.bind(1, file_id);
     st.bind(2, opt.file_name);
-    st.bind(3, static_cast<char>(opt.limit_type));
+
+    string lt(1,static_cast<char>(opt.limit_type));
+    st.bind_text(3, lt);
     st.bind(4, opt.count_limit);
     st.bind(5, opt.time_limit);
     st.exec();
