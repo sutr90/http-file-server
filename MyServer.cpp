@@ -28,7 +28,7 @@ void MyServer::stream_http_response(std::ostream &out, outgoing_things outgoing,
     std::ifstream in(file.full_name(), std::ifstream::binary);
     uint64 current = 0;
 
-    throttle t(4, chunk_size);
+    throttle t(8, chunk_size);
 
     while (current < filesize && out.good()) {
         in.read(memblock, chunk_size);

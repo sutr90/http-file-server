@@ -32,9 +32,9 @@ void file_guard::get_file(std::string url, response &response) {
         response.type = FILE_NAME;
 
         if (limit_type == "C") {
-            dlib::statement st(db, "update `files` set dl_counter = ? where `files`.`file_id` = ? COLLATE NOCASE");
-            st.bind(1, file_id);
-            st.bind(2, dl_counter - 1);
+            dlib::statement st(db, "update `files` set `dl_counter` = ? where `files`.`file_id` = ? COLLATE NOCASE");
+            st.bind(1, dl_counter - 1);
+            st.bind(2, file_id);
             st.exec();
         }
     } else {
