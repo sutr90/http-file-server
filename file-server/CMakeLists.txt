@@ -2,9 +2,7 @@ set(CMAKE_CXX_STANDARD 11)
 project(file-server)
 
 if (WIN32)
-    include_directories(D:\\tmp\\dlib)
-    find_library(DLIB_LIBRARY dlib HINTS D:\\tmp\\dlib\\cmake-build-release\\dlib)
-    set(MY_LIBS "-lws2_32 -lwinmm -lsqlite3")
+    set(MY_LIBS ${MY_LIBS} ws2_32 winmm)
 endif (WIN32)
 
 set(SOURCE_FILES main.cpp MyServer.cpp MyServer.h throttle.cpp throttle.h file_guard.cpp file_guard.h ../limit_type.h)
