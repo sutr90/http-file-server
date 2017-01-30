@@ -29,7 +29,7 @@ void file_guard::get_file(std::string url, response &response) {
     dl_counter = st2.get_column_as_int(3);
     limit_timestamp = st2.get_column_as_int64(4);
 
-    if (dl_counter > 0 || get_current_db_time() - limit_timestamp < 0) {// test_passed
+    if (can_download(dl_counter, limit_timestamp, limit_type)) {// test_passed
         response.response = file_path;
         response.type = FILE_NAME;
 
@@ -55,4 +55,15 @@ int64 file_guard::get_current_db_time() {
         return stmt.get_column_as_int64(0);
     }
     return INT64_MAX;
+}
+
+bool file_guard::can_download(int counter, dlib::int64 timestamp, char type) {
+    if (type == static_cast<char>(dl_limit_type::COUNTER)) {
+        return counter > 0;
+    }
+
+    if (type == static_cast<char>(dl_limit_type::TIMER)) {
+        return get_current_db_time() - timestamp < 0;
+    }
+    return false;
 }
