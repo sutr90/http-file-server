@@ -10,7 +10,7 @@ using namespace dlib;
 int main(int argc, char **argv) {
     options opt = parse_cmd_line(argc, argv);
 
-    config_reader cr("../../config");
+    config_reader cr("config");
     database db(cr["db_path"]);
 
     string file_id = register_file(db, opt);

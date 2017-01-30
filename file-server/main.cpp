@@ -5,7 +5,7 @@ using namespace std;
 
 int main() {
     try {
-        config_reader cr("../../config");
+        config_reader cr("config");
         server_config config(cr);
 
         MyServer file_server(config);
