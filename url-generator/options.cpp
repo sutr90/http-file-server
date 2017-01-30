@@ -10,8 +10,9 @@ uint32 parse_time(const string &time_string);
 command_line_parser parser;
 
 void print_usage_and_exit() {
-    cout << "Usage:\ngenerator [-c <arg> | -t <arg>] <absolute file path>\n";
-    cout << "generator -r <file id>\n";
+    cout << "Usage:\ngenerator [-c <arg> | -t <arg>] <absolute file path> :generate link\n";
+    cout << "generator -r <file id> :remove link <file id>\n";
+    cout << "generator -l :list all links\n";
     parser.print_options();
     exit(0);
 }
