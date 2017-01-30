@@ -31,4 +31,7 @@ std::string names::get_random_name() {
     return names::adjectives[idx_adjective] + names::animals[idx_animal];
 }
 
-dlib::rand names::rng;
+std::time_t now = std::time(0);
+tm* ltm = std::localtime(&now);
+
+dlib::rand names::rng(std::string(std::asctime(ltm)));
