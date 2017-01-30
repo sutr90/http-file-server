@@ -21,6 +21,7 @@ options parse_cmd_line(int argc, char **argv) {
         parser.add_option("c", "Allow only this number of downloads. Limit <1, 65536>", 1);
         parser.add_option("t", "Allow downloads only for this time from creating the link. Format hh:mm.", 1);
         parser.add_option("r", "Remove the link.", 1);
+        parser.add_option("l", "List available links.");
 
         parser.add_option("h", "Show help");
         parser.parse(argc, argv);
@@ -29,17 +30,27 @@ options parse_cmd_line(int argc, char **argv) {
             print_usage_and_exit();
         }
 
-        const char *one_time_opts[] = {"c", "t", "r"};
+        const char *one_time_opts[] = {"c", "t", "r", "l"};
         parser.check_one_time_options(one_time_opts);
         parser.check_incompatible_options("c", "t");
         parser.check_incompatible_options("c", "r");
+        parser.check_incompatible_options("c", "l");
         parser.check_incompatible_options("r", "t");
+        parser.check_incompatible_options("r", "l");
+        parser.check_incompatible_options("t", "l");
+
         parser.check_option_arg_range("c", 1, 65536);
 
         if(parser.option("r")){
             options o;
             o.type = option_type::OPT_REMOVE;
             o.file_name = parser.option("r").argument();
+            return o;
+        }
+
+        if(parser.option("l")){
+            options o;
+            o.type = option_type::OPT_LIST;
             return o;
         }
 
@@ -58,15 +69,13 @@ options parse_cmd_line(int argc, char **argv) {
     o.count_limit = (uint32) get_option(parser, "c", 1);
     o.file_name = parser[0];
 
-
-
     if (parser.option("t")) {
         o.type = option_type::OPT_TIMER;
         o.time_limit = parse_time(parser.option("t").argument());
     } else if(parser.option("c")) {
         o.type = option_type::OPT_COUNTER;
         o.time_limit = 0;
-    } else
+    }
 
     validate_option(o);
 

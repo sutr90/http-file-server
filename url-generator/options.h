@@ -4,10 +4,11 @@
 
 #include <dlib/uintn.h>
 
-enum class option_type : char {
+enum option_type {
     OPT_COUNTER = 'c',
     OPT_TIMER = 't',
     OPT_REMOVE = 'r',
+    OPT_LIST
 };
 
 struct options {

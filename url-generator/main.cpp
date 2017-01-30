@@ -16,6 +16,8 @@ int main(int argc, char **argv) {
     if (opt.type == option_type::OPT_REMOVE) {
         unregister_file(db, opt);
         cout << "Download link with id " << opt.file_name << " was removed.";
+    } else if (opt.type == option_type::OPT_LIST) {
+        list_registered_files(db);
     } else {
         string file_id = register_file(db, opt);
         string url = get_option(cr, "generator.domain", "") + file_id;
