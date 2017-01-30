@@ -13,16 +13,20 @@ int main(int argc, char **argv) {
     config_reader cr("config");
     database db(cr["db_path"]);
 
-    string file_id = register_file(db, opt);
-    string url = get_option(cr, "generator.domain", "") + file_id;
-
-    cout << "Your file - " << opt.file_name << " - is available for download at:" << endl;
-    cout << url << endl;
-    if(opt.limit_type == dl_limit_type::COUNTER){
-        cout << "For " << opt.count_limit << " downloads";
+    if (opt.type == option_type::OPT_REMOVE) {
+        unregister_file(db, opt);
+        cout << "Download link with id " << opt.file_name << " was removed.";
     } else {
-        cout << "For " << opt.time_limit/60 << " minutes";
-    }
+        string file_id = register_file(db, opt);
+        string url = get_option(cr, "generator.domain", "") + file_id;
 
+        cout << "Your file - " << opt.file_name << " - is available for download at:" << endl;
+        cout << url << endl;
+        if (opt.type == option_type::OPT_COUNTER) {
+            cout << "For " << opt.count_limit << " downloads";
+        } else {
+            cout << "For " << opt.time_limit / 60 << " minutes";
+        }
+    }
     return 0;
 }

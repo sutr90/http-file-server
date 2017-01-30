@@ -26,12 +26,22 @@ std::string register_file(database &db, options &opt) {
     st.bind(1, file_id);
     st.bind(2, opt.file_name);
 
-    string lt(1,static_cast<char>(opt.limit_type));
-    st.bind_text(3, lt);
+    if (opt.type == option_type::OPT_COUNTER) {
+        st.bind_text(3, "C");
+    } else if (opt.type == option_type::OPT_TIMER) {
+        st.bind_text(3, "T");
+    }
+
     st.bind(4, opt.count_limit);
     st.bind(5, opt.time_limit);
     st.exec();
 
     return file_id;
+}
+
+void unregister_file(dlib::database &db, options &opt) {
+    dlib::statement st(db, "delete from `files` where `file_id` = ? COLLATE NOCASE");
+    st.bind(1, opt.file_name);
+    st.exec();
 }
 

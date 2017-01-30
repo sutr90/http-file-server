@@ -3,13 +3,18 @@
 
 
 #include <dlib/uintn.h>
-#include "../limit_type.h"
+
+enum class option_type : char {
+    OPT_COUNTER = 'c',
+    OPT_TIMER = 't',
+    OPT_REMOVE = 'r',
+};
 
 struct options {
     dlib::uint32 time_limit;
     dlib::uint32 count_limit;
-    dl_limit_type limit_type;
     std::string file_name;
+    option_type type;
 };
 
 options parse_cmd_line(int argc, char **argv);

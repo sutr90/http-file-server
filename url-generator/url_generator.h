@@ -5,4 +5,6 @@
 
 std::string register_file(dlib::database &db, options &opt);
 
+void unregister_file(dlib::database &db, options &opt);
+
 #endif //PROJECT_URL_GENERATOR_H

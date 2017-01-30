@@ -11,6 +11,7 @@ command_line_parser parser;
 
 void print_usage_and_exit() {
     cout << "Usage:\ngenerator [-c <arg> | -t <arg>] <absolute file path>\n";
+    cout << "generator -r <file id>\n";
     parser.print_options();
     exit(0);
 }
@@ -19,6 +20,8 @@ options parse_cmd_line(int argc, char **argv) {
     try {
         parser.add_option("c", "Allow only this number of downloads. Limit <1, 65536>", 1);
         parser.add_option("t", "Allow downloads only for this time from creating the link. Format hh:mm.", 1);
+        parser.add_option("r", "Remove the link.", 1);
+
         parser.add_option("h", "Show help");
         parser.parse(argc, argv);
 
@@ -26,10 +29,19 @@ options parse_cmd_line(int argc, char **argv) {
             print_usage_and_exit();
         }
 
-        const char *one_time_opts[] = {"c", "t"};
+        const char *one_time_opts[] = {"c", "t", "r"};
         parser.check_one_time_options(one_time_opts);
         parser.check_incompatible_options("c", "t");
+        parser.check_incompatible_options("c", "r");
+        parser.check_incompatible_options("r", "t");
         parser.check_option_arg_range("c", 1, 65536);
+
+        if(parser.option("r")){
+            options o;
+            o.type = option_type::OPT_REMOVE;
+            o.file_name = parser.option("r").argument();
+            return o;
+        }
 
         if (parser.number_of_arguments() < 1) {
             cout << "File path is missing" << endl;
@@ -41,18 +53,20 @@ options parse_cmd_line(int argc, char **argv) {
         print_usage_and_exit();
     }
 
-
     options o;
-    o.limit_type = dl_limit_type::COUNTER;
-    o.file_name = parser[0];
+    o.type = option_type::OPT_COUNTER;
     o.count_limit = (uint32) get_option(parser, "c", 1);
+    o.file_name = parser[0];
+
+
 
     if (parser.option("t")) {
-        o.limit_type = dl_limit_type::TIMER;
+        o.type = option_type::OPT_TIMER;
         o.time_limit = parse_time(parser.option("t").argument());
-    } else {
+    } else if(parser.option("c")) {
+        o.type = option_type::OPT_COUNTER;
         o.time_limit = 0;
-    }
+    } else
 
     validate_option(o);
 
@@ -60,7 +74,7 @@ options parse_cmd_line(int argc, char **argv) {
 }
 
 void validate_option(options &opt) {
-    if (opt.limit_type == dl_limit_type::TIMER && opt.time_limit < 60) {
+    if (opt.type == option_type::OPT_TIMER && opt.time_limit < 60) {
         cout << "Minimal time limit is 1 minute" << endl;
         exit(1);
     }
