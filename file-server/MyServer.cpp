@@ -45,7 +45,8 @@ MyServer::on_connect(std::istream &in, std::ostream &out, const std::string &for
 
         std::string admin_prefix("admin");
         if (incoming.path.compare(0, admin_prefix.size(), admin_prefix)) {
-            admin.on_request(incoming);
+            std::string response = admin.on_request(incoming, outgoing);
+            write_http_response(out, outgoing, response);
         } else {
             response response;
             on_request(incoming, outgoing, response);

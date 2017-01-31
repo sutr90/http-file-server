@@ -9,7 +9,7 @@
 class admin_interface {
     friend class MyServer;
 private:
-    void on_request(dlib::incoming_things &things);
+    std::string on_request(dlib::incoming_things request, dlib::outgoing_things &things);
 };
 
 
