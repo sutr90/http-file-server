@@ -5,7 +5,7 @@ if (WIN32)
     set(MY_LIBS ${MY_LIBS} ws2_32 winmm)
 endif (WIN32)
 
-set(SOURCE_FILES main.cpp MyServer.cpp MyServer.h throttle.cpp throttle.h file_guard.cpp file_guard.h ../limit_type.h)
+set(SOURCE_FILES main.cpp MyServer.cpp MyServer.h throttle.cpp throttle.h file_guard.cpp file_guard.h ../limit_type.h admin.cpp admin.h)
 
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
