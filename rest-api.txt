@@ -1,0 +1,8 @@
+[{name=:"", size=500, type="DIR", date="asdfasdf sadf "},{}]
+
+
+
+/admin GET - nacist index.html
+/admin?path= GET - nacist obsah adresare path=
+/admin + POST vygenerovat stahovaci URL podle dat v POST
+{url="http...."}
