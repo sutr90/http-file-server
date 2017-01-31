@@ -6,6 +6,7 @@
 #include <string>
 #include "file_guard.h"
 #include "throttle.h"
+#include "admin_interface.h"
 
 using namespace dlib;
 
@@ -57,6 +58,8 @@ private:
     virtual void on_connect(std::istream &in, std::ostream &out, const std::string &foreign_ip,
                             const std::string &local_ip, unsigned short foreign_port, unsigned short local_port,
                             uint64);
+
+    admin_interface admin;
 
 };
 

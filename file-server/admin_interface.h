@@ -4,7 +4,7 @@
 #define PROJECT_ADMIN_H
 
 
-class admin {
+class admin_interface {
 
 };
 

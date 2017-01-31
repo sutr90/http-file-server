@@ -42,16 +42,22 @@ MyServer::on_connect(std::istream &in, std::ostream &out, const std::string &for
 
         parse_http_request(in, incoming, get_max_content_length());
         read_body(in, incoming);
-        response response;
-        on_request(incoming, outgoing, response);
-        if (response.type == STRING) {
-            write_http_response(out, outgoing, response.response);
-        } else if (response.type == FILE_NAME) {
-            stream_http_response(out, outgoing, response.response);
-        } else if (response.type == FILE_NOT_AVAILABLE) {
-            outgoing.http_return = 404;
-            outgoing.http_return_status = response.response;
-            write_http_response(out, outgoing, response.response);
+
+        std::string admin_prefix("admin");
+        if (incoming.path.compare(0, admin_prefix.size(), admin_prefix)) {
+            admin.on_request(incoming);
+        } else {
+            response response;
+            on_request(incoming, outgoing, response);
+            if (response.type == STRING) {
+                write_http_response(out, outgoing, response.response);
+            } else if (response.type == FILE_NAME) {
+                stream_http_response(out, outgoing, response.response);
+            } else if (response.type == FILE_NOT_AVAILABLE) {
+                outgoing.http_return = 404;
+                outgoing.http_return_status = response.response;
+                write_http_response(out, outgoing, response.response);
+            }
         }
     }
     catch (std::exception &e) {
@@ -66,11 +72,12 @@ void MyServer::on_request(const incoming_things &incoming, outgoing_things &outg
     }
 
     response.type = STRING;
-    response.response = "<html> <body> hello world </body> </html>";
+    response.response = "<html> <body> nothing to see here </body> </html>";
 }
 
 MyServer::MyServer(server_config &config) : chunk_size(config.chunk_size),
                                             buffer(new char[chunk_size]),
                                             t(8, chunk_size),
                                             fileguard(config.db_path),
-                                            debug(config.debug) {}
+                                            debug(config.debug),
+                                            admin() {}
