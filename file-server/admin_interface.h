@@ -4,8 +4,12 @@
 #define PROJECT_ADMIN_H
 
 
-class admin_interface {
+#include <dlib/server.h>
 
+class admin_interface {
+    friend class MyServer;
+private:
+    void on_request(dlib::incoming_things &things);
 };
 
 
