@@ -30,5 +30,8 @@ int main(int argc, char **argv) {
             cout << "For " << opt.time_limit / 60 << " minutes";
         }
     }
+
+    cout << endl;
+
     return 0;
 }
