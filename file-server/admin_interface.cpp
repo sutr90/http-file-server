@@ -3,6 +3,7 @@
 #include <dlib/dir_nav.h>
 #include <dlib/server/server_http.h>
 #include "admin_interface.h"
+#include "dir_utils.h"
 
 std::string admin_interface::on_request(dlib::incoming_things request, dlib::outgoing_things &things) {
     if (request.path == "/admin" && request.request_type == "GET") {
@@ -22,7 +23,6 @@ std::string admin_interface::on_request(dlib::incoming_things request, dlib::out
     if (request.request_type == "GET") {
         // get params from GET request.queries
 
-        return request.queries.at("test");
-
+        return get_dir_contents_as_json("D:/dev");
     }
 }
