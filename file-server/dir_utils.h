@@ -4,8 +4,9 @@
 
 #include <string>
 #include <type_traits>
+#include <dlib/dir_nav.h>
 
-std::string get_dir_contents_as_json(std::string directory);
+std::string get_dir_contents_as_json(dlib::directory &root, dlib::directory &dir);
 
 long get_date(const std::string &fname);
 
@@ -21,6 +22,5 @@ void generate_json(std::stringstream &ss, DF &dirfile) {
     ss << "\"date\":" << get_date(dirfile.full_name());
     ss << "}";
 }
-
 
 #endif //PROJECT_DIR_UTILS_H

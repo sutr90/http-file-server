@@ -5,6 +5,8 @@
 using namespace std;
 using namespace dlib;
 
+std::string get_parent_dir_json(dlib::directory &root, dlib::directory &dir);
+
 template<>
 void write_type_size<dlib::directory>(dlib::directory &dirfile, std::stringstream &ss) {
     ss << "\"type\":\"dir\",";
@@ -18,9 +20,7 @@ void write_type_size<dlib::file>(dlib::file &dirfile, std::stringstream &ss) {
 };
 
 
-string get_dir_contents_as_json(std::string directory) {
-    dlib::directory dir(directory);
-
+string get_dir_contents_as_json(dlib::directory &root, dlib::directory &dir) {
     auto child_dirs = dir.get_dirs();
     auto child_files = dir.get_files();
 
@@ -37,6 +37,9 @@ string get_dir_contents_as_json(std::string directory) {
 
     stringstream ss;
     ss << "[";
+
+    ss << get_parent_dir_json(root, dir);
+
     for (auto it = child_dirs.begin(); it != child_dirs.end(); ++it) {
         generate_json(ss, *it);
         ss << ",";
@@ -48,7 +51,7 @@ string get_dir_contents_as_json(std::string directory) {
     }
 
     // move one char back
-    ss.seekp(-1,ss.cur);
+    ss.seekp(-1, ss.cur);
     // replace last , with ]
     ss << "]";
 
@@ -56,6 +59,15 @@ string get_dir_contents_as_json(std::string directory) {
     std::replace(s.begin(), s.end(), '\\', '/'); // replace all 'x' to 'y'
 
     return s;
+}
+
+std::string get_parent_dir_json(dlib::directory &root, dlib::directory &dir) {
+    directory parent = dir.get_parent();
+    auto tmp = root;
+    if (parent.full_name().compare(0, root.full_name().size(), root.full_name()) == 0) {
+        tmp = parent;
+    }
+    return "{\"name\":\"..\",\"path\":\"" + tmp.full_name() + "\",\"type\":\"dir\",\"size\":null,\"date\":null}";
 }
 
 long get_date(const std::string &fname) {

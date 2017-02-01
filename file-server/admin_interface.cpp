@@ -30,7 +30,7 @@ std::string admin_interface::on_request(dlib::incoming_things request, dlib::out
             dlib::directory tmp(root_dir.full_name() + "/" + request.queries["path"]);
 
             if (tmp.full_name().compare(0, root_dir.full_name().size(), root_dir.full_name()) == 0) {
-                return get_dir_contents_as_json(request.queries["path"]);
+                return get_dir_contents_as_json(root_dir, tmp);
             } else {
                 return "<img src=\"http://thevpnguy.com/wp-content/uploads/2016/01/access-denied.jpg\">";
             }
