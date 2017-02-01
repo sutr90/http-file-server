@@ -43,7 +43,8 @@ MyServer::on_connect(std::istream &in, std::ostream &out, const std::string &for
         read_body(in, incoming);
 
         std::string admin_prefix("/admin");
-        if (!incoming.path.compare(0, admin_prefix.size(), admin_prefix)) {
+        //incoming.path[0:prefix.len()] == prefix
+        if (incoming.path.compare(0, admin_prefix.size(), admin_prefix) == 0) {
             std::string response = admin.on_request(incoming, outgoing);
             write_http_response(out, outgoing, response);
         } else {
@@ -81,5 +82,5 @@ MyServer::MyServer(server_config &config) : chunk_size(config.chunk_size),
                                             db(config.db_path),
                                             fileguard(db),
                                             debug(config.debug),
-                                            admin(db),
-                                            root_dir(config.root_path) {}
+                                            root_dir(config.root_path),
+                                            admin(db, root_dir) {}
