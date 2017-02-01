@@ -29,6 +29,8 @@ std::string admin_interface::on_request(dlib::incoming_things request, dlib::out
         return get_dir_contents_as_json("D:/dev");
     }
 
+    things.http_return = 500;
+    things.http_return_status = "something's wrong";
     return "error";
 }
 
