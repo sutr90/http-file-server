@@ -1,6 +1,5 @@
 #include <dlib/dir_nav.h>
 #include "dir_utils.h"
-
 #include <sys/stat.h>
 
 using namespace std;

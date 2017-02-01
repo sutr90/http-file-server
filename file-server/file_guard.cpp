@@ -46,7 +46,7 @@ void file_guard::get_file(std::string url, response &response) {
     }
 }
 
-file_guard::file_guard(std::string &db_path) : db(db_path) {}
+file_guard::file_guard(dlib::database &database) : db(database) {}
 
 int64 file_guard::get_current_db_time() {
     dlib::statement stmt(db, "select strftime('%s','now')");

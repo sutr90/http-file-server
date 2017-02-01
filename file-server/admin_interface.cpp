@@ -26,3 +26,7 @@ std::string admin_interface::on_request(dlib::incoming_things request, dlib::out
         return get_dir_contents_as_json("D:/dev");
     }
 }
+
+admin_interface::admin_interface(dlib::database &database) : db(database) {
+
+}

@@ -48,6 +48,7 @@ private:
 
     void on_request(const incoming_things &incoming, outgoing_things &outgoing, response &response);
 
+    database db;
     file_guard fileguard;
     uint32 chunk_size;
     throttle t;
