@@ -13,7 +13,7 @@ template<class DF>
 void write_type_size(DF &dirfile, std::stringstream &ss);
 
 template<class DF>
-std::string generate_json(std::stringstream &ss, DF &dirfile) {
+void generate_json(std::stringstream &ss, DF &dirfile) {
     ss << "{";
     ss << "\"name\":\"" << dirfile.name() << "\",";
     ss << "\"path\":\"" << dirfile.full_name() << "\",";
