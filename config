@@ -5,6 +5,8 @@ server {
     chunk_size=64 #in kB
     max_speed=8 # float value in Mbit
     debug=0 # 0/1 -> false/true
+    # root directory which will be served
+    root_dir=/data/public
 }
 
 generator {

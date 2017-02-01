@@ -1,5 +1,4 @@
 #include "MyServer.h"
-#include <dlib/dir_nav.h>
 
 void MyServer::stream_http_response(std::ostream &out, outgoing_things outgoing, std::string &filename) {
     dlib::file file(filename);
@@ -82,4 +81,5 @@ MyServer::MyServer(server_config &config) : chunk_size(config.chunk_size),
                                             db(config.db_path),
                                             fileguard(db),
                                             debug(config.debug),
-                                            admin(db) {}
+                                            admin(db),
+                                            root_dir(config.root_path) {}

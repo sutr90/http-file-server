@@ -4,6 +4,7 @@
 #include <dlib/server.h>
 #include <iostream>
 #include <string>
+#include <dlib/dir_nav.h>
 #include "file_guard.h"
 #include "throttle.h"
 #include "admin_interface.h"
@@ -27,23 +28,26 @@ struct server_config {
     uint32 chunk_size;
     float max_speed;
     bool debug;
+    std::string root_path;
 
     server_config(config_reader &cr) :
             db_path(cr["db_path"]),
             port(get_option(cr, "server.port", 5000)),
-            chunk_size((uint32) (get_option(cr, "server.chunk_size", 5000) * 1024)),
-            max_speed(get_option(cr, "server.max_speed", 8.f)),
-            debug(get_option(cr,"server.debug", false))
-    {}
+            chunk_size((uint32) (get_option(cr, "server.chunk_size", 64) * 1024)),
+            max_speed(get_option(cr, "server.max_speed", 10.f)),
+            debug(get_option(cr, "server.debug", false)),
+            root_path(get_option(cr, "server.root_path", ".")) {}
 };
 
 class MyServer : public server_http {
 public:
     MyServer(server_config &config);
+
     virtual ~MyServer() {}
 
 private:
     bool debug;
+
     const std::string on_request(const incoming_things &incoming, outgoing_things &outgoing) { return ""; };
 
     void on_request(const incoming_things &incoming, outgoing_things &outgoing, response &response);
@@ -53,6 +57,7 @@ private:
     uint32 chunk_size;
     throttle t;
     std::unique_ptr<char[]> buffer;
+    directory root_dir;
 
     void stream_http_response(std::ostream &out, outgoing_things outgoing, std::string &filename);
 
