@@ -44,10 +44,12 @@ string get_dir_contents_as_json(std::string directory) {
 
     for (auto it = child_files.begin(); it != child_files.end(); ++it) {
         generate_json(ss, *it);
-        if (it != child_files.end() - 1) {
-            ss << ",";
-        }
+        ss << ",";
     }
+
+    // move one char back
+    ss.seekp(-1,ss.cur);
+    // replace last , with ]
     ss << "]";
 
     std::string s = ss.str();
