@@ -43,8 +43,8 @@ MyServer::on_connect(std::istream &in, std::ostream &out, const std::string &for
         parse_http_request(in, incoming, get_max_content_length());
         read_body(in, incoming);
 
-        std::string admin_prefix("admin");
-        if (incoming.path.compare(0, admin_prefix.size(), admin_prefix)) {
+        std::string admin_prefix("/admin");
+        if (!incoming.path.compare(0, admin_prefix.size(), admin_prefix)) {
             std::string response = admin.on_request(incoming, outgoing);
             write_http_response(out, outgoing, response);
         } else {
