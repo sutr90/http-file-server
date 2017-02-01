@@ -25,8 +25,7 @@ std::string admin_interface::on_request(dlib::incoming_things request, dlib::out
 
     if (request.request_type == "GET") {
         // get params from GET request.queries
-
-        return get_dir_contents_as_json("D:/dev");
+        return get_dir_contents_as_json(request.queries["path"]);
     }
 
     things.http_return = 500;
