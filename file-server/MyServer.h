@@ -36,7 +36,7 @@ struct server_config {
             chunk_size((uint32) (get_option(cr, "server.chunk_size", 64) * 1024)),
             max_speed(get_option(cr, "server.max_speed", 10.f)),
             debug(get_option(cr, "server.debug", false)),
-            root_path(get_option(cr, "server.root_path", ".")) {}
+            root_path(get_option(cr, "server.root_dir", "")) {}
 };
 
 class MyServer : public server_http {
