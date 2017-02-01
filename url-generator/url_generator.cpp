@@ -8,8 +8,17 @@ using namespace std;
 std::string generate_file_id(database &db) {
     bool name_exist;
     string file_id;
+
+    int counter = 0;
+
     do {
+        counter++;
+
         file_id = names::get_random_name();
+        if(counter > 20){
+            file_id += to_string(time(NULL));
+        }
+
         dlib::statement st(db, "select `files`.`file_id` from `files` where `files`.`file_id` = ? COLLATE NOCASE");
         st.bind(1, file_id);
         st.exec();
