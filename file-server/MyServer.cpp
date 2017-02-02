@@ -82,5 +82,4 @@ MyServer::MyServer(server_config &config) : chunk_size(config.chunk_size),
                                             db(config.db_path),
                                             fileguard(db),
                                             debug(config.debug),
-                                            root_dir(config.root_path),
-                                            admin(db, root_dir) {}
+                                            admin(db, config) {}

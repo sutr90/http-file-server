@@ -22,4 +22,6 @@ options parse_cmd_line(int argc, char **argv);
 
 void validate_option(options &opt);
 
+dlib::uint32 parse_time(const std::string &time_string);
+
 #endif //PROJECT_OPTINONS_H

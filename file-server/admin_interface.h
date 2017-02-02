@@ -8,15 +8,17 @@
 #include <dlib/sqlite/sqlite.h>
 #include <dlib/dir_nav.h>
 
+class server_config;
+
 class admin_interface {
     friend class MyServer;
 private:
     std::string on_request(dlib::incoming_things request, dlib::outgoing_things &things);
     dlib::database &db;
-    dlib::directory &root_dir;
-
+    dlib::directory root_dir;
+    server_config &svr_cfg;
 public:
-    admin_interface(dlib::database &database, dlib::directory &root_dir);
+    admin_interface(dlib::database &database, server_config &svr_config);
 };
 
 

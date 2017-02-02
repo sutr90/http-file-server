@@ -6,10 +6,7 @@ server {
     max_speed=8 # float value in Mbit
     debug=0 # 0/1 -> false/true
     # root directory which will be served
-    root_dir=/data/public
-}
-
-generator {
+    root_dir=D:/
     # public domain name of the file server. Include the final slash!!
     domain=http://trinity.ingames.cz/stahovac/
 }

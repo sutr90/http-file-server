@@ -5,6 +5,7 @@
 #include "admin_interface.h"
 #include "dir_utils.h"
 #include "../url-generator/url_generator.h"
+#include "MyServer.h"
 
 std::string admin_interface::on_request(dlib::incoming_things request, dlib::outgoing_things &things) {
     if (request.path == "/admin" && request.request_type == "GET") {
@@ -30,15 +31,26 @@ std::string admin_interface::on_request(dlib::incoming_things request, dlib::out
     if (request.path == "/admin" && request.request_type == "POST") {
         //generate URL for file
         options opt;
-        register_file(db, opt);
-        return "URL for file is XYZ";
+
+        opt.count_limit = (dlib::uint32) std::stoi(request.queries["count"]);
+        opt.file_name = root_dir.full_name() + root_dir.get_separator() + request.queries["path"];
+        opt.time_limit = parse_time(request.queries["expire"]);
+        if (request.queries["type"] == "count") {
+            opt.type = option_type::OPT_COUNTER;
+        } else if (request.queries["type"] == "expire") {
+            opt.type = option_type::OPT_TIMER;
+        }
+
+        validate_option(opt);
+
+        return svr_cfg.domain + register_file(db, opt);
     }
 
     if (request.request_type == "GET") {
         // get params from GET request.queries
         try {
 
-            dlib::directory tmp(root_dir.full_name() + "/" + request.queries["path"]);
+            dlib::directory tmp(root_dir.full_name() + root_dir.get_separator() + request.queries["path"]);
 
             if (tmp.full_name().compare(0, root_dir.full_name().size(), root_dir.full_name()) == 0) {
                 return get_dir_contents_as_json(root_dir, tmp);
@@ -57,6 +69,5 @@ std::string admin_interface::on_request(dlib::incoming_things request, dlib::out
     return "<img src=\"http://i.imgur.com/nkp8h.jpg\">";
 }
 
-admin_interface::admin_interface(dlib::database &database, dlib::directory &rd) : db(database), root_dir(rd) {
-
-}
+admin_interface::admin_interface(dlib::database &database, server_config &svr_config)
+        : db(database), root_dir(svr_config.root_path), svr_cfg(svr_config) {}
