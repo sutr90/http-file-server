@@ -18,7 +18,7 @@ std::string admin_interface::on_request(dlib::incoming_things request, dlib::out
 
         std::string file_content = buffer.str();
         std::string needle("__GLOBAL_PATH__");
-        std::string replacement(root_dir.full_name() + "/");
+        std::string replacement(svr_cfg.root_path);
         size_t pos = 0;
         while ((pos = file_content.find(needle, pos)) != std::string::npos) {
             file_content.replace(pos, needle.length(), replacement);
