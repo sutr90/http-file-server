@@ -5,8 +5,6 @@
 using namespace dlib;
 using namespace std;
 
-uint32 parse_time(const string &time_string);
-
 command_line_parser parser;
 
 void print_usage_and_exit() {
@@ -84,9 +82,21 @@ options parse_cmd_line(int argc, char **argv) {
 }
 
 void validate_option(options &opt) {
+
+    //TODO
+
+    if(opt.type != option_type::OPT_TIMER || opt.type != option_type::OPT_COUNTER){
+        throw std::exception();
+    }
+
     if (opt.type == option_type::OPT_TIMER && opt.time_limit < 60) {
         cout << "Minimal time limit is 1 minute" << endl;
-        exit(1);
+        throw std::exception();
+    }
+
+    if (opt.type == option_type::OPT_COUNTER && opt.count_limit < 1) {
+        cout << "Minimal count is 1" << endl;
+        throw std::exception();
     }
 
     try {
@@ -95,7 +105,7 @@ void validate_option(options &opt) {
     }
     catch (file::file_not_found &e) {
         cout << "File " << opt.file_name << " not found or accessible: " << e.info << endl;
-        exit(1);
+        throw std::exception();
     }
 }
 

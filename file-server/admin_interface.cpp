@@ -30,6 +30,18 @@ std::string admin_interface::on_request(dlib::incoming_things request, dlib::out
     if (request.path == "/admin" && request.request_type == "POST") {
         //generate URL for file
         options opt;
+
+        opt.count_limit = (dlib::uint32) std::stoi(request.queries["count"]);
+        opt.file_name = root_dir.full_name() + "/" + request.queries["path"];
+        opt.time_limit = parse_time(request.queries["expire"]);
+        if (request.queries["type"] == "count") {
+            opt.type = option_type::OPT_COUNTER;
+        } else if (request.queries["type"] == "expire") {
+            opt.type = option_type::OPT_TIMER;
+        }
+
+        validate_option(opt);
+
         register_file(db, opt);
         return "URL for file is XYZ";
     }
