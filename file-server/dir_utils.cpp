@@ -67,7 +67,7 @@ std::string get_parent_dir_json(dlib::directory &root, dlib::directory &dir) {
     if (parent.full_name().compare(0, root.full_name().size(), root.full_name()) == 0) {
         tmp = parent;
     }
-    return "{\"name\":\"..\",\"path\":\"" + tmp.full_name() + "\",\"type\":\"dir\",\"size\":null,\"date\":null}";
+    return "{\"name\":\"..\",\"path\":\"" + tmp.full_name()+ tmp.get_separator() + "\",\"type\":\"dir\",\"size\":null,\"date\":null}";
 }
 
 long get_date(const std::string &fname) {
