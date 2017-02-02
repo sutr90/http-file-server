@@ -2,13 +2,13 @@
 #include "throttle.h"
 
 void throttle::sleep() {
-    if (sleep_time > 1) {
+    if (sleep_time > 0) {
         dlib::sleep(sleep_time);
     }
 }
 
 void throttle::set_sleep_time() {
-    if (sleep_time > 0) {
+    if (speed_limit > 0) {
         speed_limit = speed_limit * 1024 * 1024;
         float speed_bytes = speed_limit / 8.0f; // speed limit in bytes
         float chunk_count = speed_bytes / chunk_size; // number of chunks per second

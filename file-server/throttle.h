@@ -7,7 +7,7 @@ class throttle {
 private:
     float speed_limit;
     dlib::uint32 chunk_size;
-    dlib::uint32 sleep_time;
+    dlib::uint32 sleep_time = 0;
     void set_sleep_time();
 public:
     throttle(float speed_limit_mbit, dlib::uint32 chunk_size_byte);

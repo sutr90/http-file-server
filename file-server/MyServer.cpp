@@ -78,7 +78,7 @@ void MyServer::on_request(const incoming_things &incoming, outgoing_things &outg
 
 MyServer::MyServer(server_config &config) : chunk_size(config.chunk_size),
                                             buffer(new char[chunk_size]),
-                                            t(8, chunk_size),
+                                            t(config.max_speed, chunk_size),
                                             db(config.db_path),
                                             fileguard(db),
                                             debug(config.debug),
