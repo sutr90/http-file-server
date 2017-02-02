@@ -26,12 +26,12 @@ string get_dir_contents_as_json(dlib::directory &root, dlib::directory &dir) {
 
     sort(child_dirs.begin(), child_dirs.end(),
          [](const dlib::directory &a, const dlib::directory &b) {
-             return a.name() > b.name();
+             return a.name() < b.name();
          });
 
     sort(child_files.begin(), child_files.end(),
          [](const dlib::file &a, const dlib::file &b) {
-             return a.name() > b.name();
+             return a.name() < b.name();
          });
 
 
