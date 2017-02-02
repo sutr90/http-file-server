@@ -13,7 +13,18 @@ std::string admin_interface::on_request(dlib::incoming_things request, dlib::out
         std::ifstream t(file.full_name());
         std::stringstream buffer;
         buffer << t.rdbuf();
-        return buffer.str();
+
+
+        std::string file_content = buffer.str();
+        std::string needle("__GLOBAL_PATH__");
+        std::string replacement(root_dir.full_name() + "/");
+        size_t pos = 0;
+        while ((pos = file_content.find(needle, pos)) != std::string::npos) {
+            file_content.replace(pos, needle.length(), replacement);
+            pos += replacement.length();
+        }
+
+        return file_content;
     }
 
     if (request.path == "/admin" && request.request_type == "POST") {
@@ -34,7 +45,10 @@ std::string admin_interface::on_request(dlib::incoming_things request, dlib::out
             } else {
                 return "<img src=\"http://thevpnguy.com/wp-content/uploads/2016/01/access-denied.jpg\">";
             }
-        } catch (dlib::directory::dir_not_found &e) {}
+        } catch (dlib::directory::dir_not_found &e) {
+            //TODO add the path in debug mode
+            return "directory not found";
+        }
 
     }
 
