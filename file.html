@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>@Trinity - Generování url</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style type="text/css">
+    <!--
+      .item > div {
+        overflow:hidden;
+        white-space:nowrap;
+        text-overflow:ellipsis;
+      }
+      .item:hover {
+        cursor: pointer
+      }
+    -->
+    </style>
+
+  </head>
+  
+<body>    
+  <div class="row centered-form center-block">                                                
+    <div class="container col-md-6 col-md-offset-3">    
+      <div class="page-header">
+        <h1>@Trinity <small>Generování url</small></h1>    
+      </div>    
+      
+      <div id="result"></div>
+      
+      <!--<div class="alert alert-success" role="alert">
+        <div class="input-group">
+          <input type="text" id="url" class="form-control" value="http://xxxxx" />
+          <span class="input-group-btn">
+            <button class="btn btn-default" data-clipboard-target="#url" type="button"><span class="glyphicon glyphicon-copy"></span></button>
+          </span>
+        </div>
+      </div>--> 
+      
+      <form id="form">    
+        <div class="row">      
+          <div class="col-md-6">     
+            <div class="form-group">   
+              <label for="count">Počet stažení</label>          
+              <div class="input-group">
+                <span class="input-group-addon">            
+                  <input type="radio" checked name="type" value="count" />          
+                </span>          
+                <input type="number" name="count" min="1" value="1" class="form-control" />        
+              </div>      
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="expire">Doba platnosti</label>
+              <div class="input-group">          
+                <span class="input-group-addon">            
+                  <input type="radio" name="type" value="expire" />          
+                </span>          
+                <input type="time" name="expire" value="01:00" disabled class="form-control" />                 
+              </div>
+            </div>
+          </div>      
+        </div>    
+        <div class="row">      
+          <div class="col-lg-12">        
+            <div class="form-group">
+              <label for="path">Cesta k souboru</label>    
+              <div class="input-group">      
+                <span class="input-group-addon" id="prefix"></span>          
+                <input type="text" name="path" class="form-control" />          
+                <span class="input-group-btn">            
+                  <button class="btn btn-default" name="go" data-loading-text="<i class='glyphicon glyphicon-refresh gly-spin'></i> Vygeneruj" type="button">Vygeneruj</button>          
+                </span>
+              </div>        
+            </div>      
+          </div>    
+        </div>    
+      </form>                  
+      <div class="panel panel-default">      
+        <div class="panel-body" id="files">
+          
+        </div>    
+      </div>              
+    </div>                                       
+  </div> 
+     
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->    
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>    
+   <!-- Latest compiled and minified JavaScript -->    
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.16/clipboard.min.js"></script>
+    
+  <script>
+  
+    const GLOBAL_PATH = '__GLOBAL_PATH__'; 
+    
+    function setUrl(url) {
+       url = url.replace(GLOBAL_PATH, '');
+       $('input[name="path"]').val(url);
+    }  
+  
+    function pasteFiles(files) {
+      $('#files').empty();
+        $.each( files, function( key, item ) {
+        
+          var date = '';
+          if (item.date !== null) {
+            date = new Date(item.date*1000).toISOString().slice(0,19).replace('T',' ');
+          }
+
+          var size = '';
+          if (item.size !== null) {
+            if (item.size > 1024*1024*1024) {
+              size = Math.round(item.size / (1024*1024*1024) * 100) / 100 + ' GB'; 
+            } else if (item.size > 1024*1024) {
+              size = Math.round(item.size / (1024*1024) * 100) / 100 + ' MB'; 
+            } else if (item.size > 1024) {
+              size = Math.round(item.size / 1024 * 100) / 100 + ' kB'; 
+            } else {
+              size = item.size + ' B';
+            }
+          }
+                   
+          if (item.type === 'file') {
+            $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap" title="' + item.name + '"><div class="col-xs-1"><span class="glyphicon glyphicon-file"></span></div><div class="col-xs-7 col-sm-5">' + item.name + '</div><div class="col-sm-4 hidden-xs">' + date + '</div><div class="col-xs-1 col-lg-2">' + size + '</div></div>'));            
+          } else if (item.type === 'dir' && item.name !== '..') {
+            $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap" title="' + item.name + '"><div class="col-xs-1"><span class="glyphicon glyphicon-folder-open"></span></div><div class="col-xs-7 col-sm-5">' + item.name + '</div><div class="col-sm-4 hidden-xs">' + date + '</div><div class="col-xs-1 col-lg-2"></div></div>'));
+          } else {
+            $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap"><div class="col-xs-1"><span class="glyphicon glyphicon-folder-open"></span></div><div class="col-xs-10">..</div></div>'));
+          }                                                                                                                                                                                                    
+          $("#item_" + key).click(function () {
+          setUrl(item.path);
+          if (item.type === 'dir') {
+            loadDir(item.path);
+          }
+        });
+      });
+    }
+  
+    function loadDir(path) {
+      path = path.replace(GLOBAL_PATH, '');
+      $.getJSON( "?path=" + path, function( data ) {
+        pasteFiles(data);
+      }).error(function() { 
+        $('#files').empty();
+        $("#files").append($('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">Error:</span> Nastal problém při načítání <strong>' + path + '</strong>'));
+      });    
+    }
+  
+    $( document ).ready(function() {
+      new Clipboard('.btn');
+        
+      $("input:radio[name='type']").change(
+        function() {
+          if ($(this).is(":checked") && $(this).val() == 'count') {
+            $('input[name="expire"]').prop('disabled', true);
+            $('input[name="count"]').prop('disabled', false);
+          } else {
+            $('input[name="expire"]').prop('disabled', false);
+            $('input[name="count"]').prop('disabled', true);          
+          }
+      });
+      
+      $("button[name='go']").click(function() {
+        var path = $('input[name="path"]').val();
+        var type = $('input[name="type"]:checked').val();
+        var expire = $('input[name="expire"]').val();
+        var count = $('input[name="count"]').val();
+        var $btn = $(this).button('loading');
+
+        $.post( "admin", { path: path, type: type, expire: expire, count: count}).done(function( data ) {
+          alert( "Data Loaded: " + data );
+        }).fail(function() { 
+          $('#result').empty();
+          $("#result").append($('<div class="alert alert-danger" role="alert">Nepodařilo se vygenerovat odkaz ke stažení</div>'));
+        }).always(function() {
+          $btn.button('reset');
+        });
+      });
+      
+      $("#prefix").append(GLOBAL_PATH);
+                                    
+      loadDir(GLOBAL_PATH);
+      
+    });
+  </script>  
+</body>
+</html>
