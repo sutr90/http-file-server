@@ -44,16 +44,7 @@
       </div>    
       
       <div id="result"></div>
-      
-      <!--<div class="alert alert-success" role="alert">
-        <div class="input-group">
-          <input type="text" id="url" class="form-control" value="http://xxxxx" />
-          <span class="input-group-btn">
-            <button class="btn btn-default" data-clipboard-target="#url" type="button"><span class="glyphicon glyphicon-copy"></span></button>
-          </span>
-        </div>
-      </div>--> 
-      
+            
       <form id="form">    
         <div class="row">      
           <div class="col-md-6">     
@@ -84,7 +75,7 @@
             <div class="form-group">
               <label for="path">Cesta k souboru</label>    
               <div class="input-group">      
-                <span class="input-group-addon" id="prefix"></span>          
+                <span class="input-group-addon item" id="prefix"></span>          
                 <input type="text" name="path" class="form-control" />          
                 <span class="input-group-btn">            
                   <button class="btn btn-default" name="go" data-loading-text="<i class='glyphicon glyphicon-refresh gly-spin'></i> Vygeneruj" type="button">Vygeneruj</button>          
@@ -104,6 +95,8 @@
      
   <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->    
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>    
+  <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  
    <!-- Latest compiled and minified JavaScript -->    
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   
@@ -185,19 +178,33 @@
         var type = $('input[name="type"]:checked').val();
         var expire = $('input[name="expire"]').val();
         var count = $('input[name="count"]').val();
-        var $btn = $(this).button('loading');
-
-        $.post( "admin", { path: path, type: type, expire: expire, count: count}).done(function( data ) {
-          alert( "Data Loaded: " + data );
-        }).fail(function() { 
-          $('#result').empty();
-          $("#result").append($('<div class="alert alert-danger" role="alert">Nepodařilo se vygenerovat odkaz ke stažení</div>'));
-        }).always(function() {
-          $btn.button('reset');
-        });
+          console.warn(path);
+        if (path == null || path.trim().lenght < 1) {
+          
+        } else {
+        
+          var $btn = $(this).button('loading');
+  
+          $.post( "admin", { path: path, type: type, expire: expire, count: count}).done(function( data ) {
+            $('#result').slideDown().hide("fade", function(){
+              $(this).empty();
+              $("#result").append($('<div class="alert alert-success" role="alert"><div class="input-group"><input readonly type="text" id="url" class="form-control" value="' + data + '" /><span class="input-group-btn"><button class="btn btn-default" data-clipboard-target="#url" type="button"><span class="glyphicon glyphicon-copy"></span></button></span></div></div>'))
+              .show("fade");
+            });           
+          }).fail(function() { 
+            $('#result').slideDown().hide("fade", function(){
+              $(this).empty();
+              $("#result").append($('<div class="alert alert-danger" role="alert">Nepodařilo se vygenerovat odkaz ke stažení</div>'))
+              .show("fade");
+            });                                                                                      
+          }).always(function() {
+            $btn.button('reset');
+          });
+        
+        }
       });
       
-      $("#prefix").append(GLOBAL_PATH);
+      $("#prefix").click(function(){loadDir(GLOBAL_PATH);}).append(GLOBAL_PATH);
                                     
       loadDir(GLOBAL_PATH);
       
