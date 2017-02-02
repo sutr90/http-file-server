@@ -85,7 +85,7 @@ void validate_option(options &opt) {
 
     //TODO
 
-    if(opt.type != option_type::OPT_TIMER || opt.type != option_type::OPT_COUNTER){
+    if(opt.type != option_type::OPT_TIMER && opt.type != option_type::OPT_COUNTER){
         throw std::exception();
     }
 

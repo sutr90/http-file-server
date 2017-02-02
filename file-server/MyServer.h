@@ -22,13 +22,15 @@ struct response {
     response_type type;
 };
 
-struct server_config {
+class server_config {
+public:
     std::string db_path;
     int port;
     uint32 chunk_size;
     float max_speed;
     bool debug;
     std::string root_path;
+    std::string domain;
 
     server_config(config_reader &cr) :
             db_path(cr["db_path"]),
@@ -36,7 +38,8 @@ struct server_config {
             chunk_size((uint32) (get_option(cr, "server.chunk_size", 64) * 1024)),
             max_speed(get_option(cr, "server.max_speed", 10.f)),
             debug(get_option(cr, "server.debug", false)),
-            root_path(get_option(cr, "server.root_dir", "")) {}
+            root_path(get_option(cr, "server.root_dir", "")),
+            domain(get_option(cr, "server.domain", "<error domain not set>")){}
 };
 
 class MyServer : public server_http {
@@ -57,7 +60,6 @@ private:
     uint32 chunk_size;
     throttle t;
     std::unique_ptr<char[]> buffer;
-    directory root_dir;
 
     void stream_http_response(std::ostream &out, outgoing_things outgoing, std::string &filename);
 
