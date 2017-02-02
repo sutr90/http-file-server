@@ -38,7 +38,7 @@ string get_dir_contents_as_json(dlib::directory &root, dlib::directory &dir) {
     stringstream ss;
     ss << "[";
 
-    ss << get_parent_dir_json(root, dir);
+    ss << get_parent_dir_json(root, dir) << ",";
 
     for (auto it = child_dirs.begin(); it != child_dirs.end(); ++it) {
         generate_json(ss, *it);
