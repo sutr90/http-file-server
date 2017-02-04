@@ -5,10 +5,11 @@ int main() {
     dlib::directory dir("D:");
     dlib::file file("D:\\outbanka.txt");
 
-    std::ofstream ssss("D:\\outbanka.txt");
+    std::ofstream zip("D:\\test.zip", std::ios::out | std::ios::binary);
 
-    stream_to_zip(dir, ssss);
-    stream_to_zip(file, ssss);
+    stream_to_zip(dir, zip);
+    stream_to_zip(file, zip);
 
     return 0;
 }
+
