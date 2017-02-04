@@ -30,18 +30,15 @@ void zip_archive::add(dlib::file &file) {
 void zip_archive::stream(std::ostream &stream) {
     for (auto it = files.begin(); it != files.end(); ++it) {
         it->write_local_header(stream);
-        edr.disk_entries++;
-        edr.directory_entries++;
-        edr.offset += it->get_entry_size();
     }
 
     uint32_t relative_offset = 0;
     for (auto it = files.begin(); it != files.end(); ++it) {
         relative_offset += it->get_entry_size();
         it->central_header.relative_offset = relative_offset;
+        it->central_header.relative_offset -= files.begin()->get_entry_size();// offset of first entry is 0, by subtracting first entry size, we get correct offset
         it->write_directory_header(stream);
-        edr.directory_size += it->get_directory_entry_size();
-        edr.offset += it->central_header.get_size();
+        edr.offset += it->data_desc.decompressed_size;
     }
 
     edr.write(stream);

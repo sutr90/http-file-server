@@ -1,14 +1,17 @@
 #include <dlib/dir_nav.h>
-#include "zip_stream.h"
+#include "zip_headers.h"
 
 int main() {
-    dlib::directory dir("D:");
-    dlib::file file("D:\\outbanka.txt");
+    dlib::file file("D:\\a.txt");
+    dlib::file file2("D:\\b.txt");
 
-    std::ofstream zip("D:\\test.zip", std::ios::out | std::ios::binary);
+    std::ofstream zip_stream("D:\\test_new.zip", std::ios::out | std::ios::binary);
 
-    stream_to_zip(dir, zip);
-    stream_to_zip(file, zip);
+    zip_archive zip;
+    zip.add(file);
+    zip.add(file2);
+
+    zip.stream(zip_stream);
 
     return 0;
 }

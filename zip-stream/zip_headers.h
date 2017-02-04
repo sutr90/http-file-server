@@ -8,9 +8,9 @@
 class data_descriptor {
 public:
     const uint32_t MAGIC = 0x08074b50;
-    uint32_t crc32;
-    uint32_t compressed_size;
-    uint32_t decompressed_size;
+    uint32_t crc32 =0;
+    uint32_t compressed_size = 0;
+    uint32_t decompressed_size = 0;
 
     data_descriptor() {};
 
@@ -27,8 +27,8 @@ public:
     const uint16_t DISK_NUMBER = 0x0000;
     const uint16_t INTERNAL_ATTRIBUTES = 0x0000;
     const uint32_t EXTERNAL_ATTRIBUTES = 0x0000;
-    uint32_t relative_offset;
-    local_file_header *local_header;
+    uint32_t relative_offset = 0;
+    local_file_header *local_header = nullptr;
 
     central_directory_header(local_file_header *local) :
             local_header(local) {}
@@ -49,12 +49,12 @@ public:
     const uint32_t CRC32 = 0x0000;
     const uint32_t COMPRESSED_SIZE = 0x0000;
     const uint32_t DECOMPRESSED_SIZE = 0x0000;
-    uint16_t file_name_len;
+    uint16_t file_name_len = 0;
     const uint16_t EXTRA_FIELD_LEN = 0x0000;
 
     data_descriptor data_desc;
     central_directory_header central_header;
-    std::string &zip_name;
+    std::string zip_name;
 
     local_file_header(dlib::file &file) : local_file_header(file, file.name()) {};
 
@@ -80,15 +80,15 @@ public:
     const uint32_t MAGIC = 0x06054b50;
     const uint16_t DISK_NUMBER = 0x0000;
     const uint16_t START_DISK_NUMBER = 0x0000;
-    uint16_t disk_entries;
-    uint16_t directory_entries;
-    uint32_t directory_size;
-    uint32_t offset;
+    uint16_t disk_entries = 0;
+    uint16_t directory_entries = 0;
+    uint32_t directory_size = 0;
+    uint32_t offset = 0;
     const uint16_t COMMENT_LENGTH = 0x0000;
 
     end_directory_record() {};
 
-    void write(std::ostream &stream) ;
+    void write(std::ostream &stream);
 };
 
 class zip_archive {
