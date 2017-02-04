@@ -51,22 +51,20 @@ void write_local_file_header(dlib::file &file, std::ostream &ostream) {
     mag.i = (uint32_t) 0x04034b50;
     ostream.write((char *) &mag.b, 4);
 
-    char data[] = {0x0a, 0, 0, 0, 0, 0};
+    char data[] = {0x0a, 0, 8, 0, 0, 0};
     ostream.write((char *) &data, 6);
 
     byteint datetime;
-    time_t time_val = time(NULL);
-    tm *tm = localtime(&time_val);
 
     datetime.i = 0;
     ostream.write((char *) &datetime.b, 4);
 
     //crc
-    datetime.i =0xE8B7BE43;
+    datetime.i = 0;//0xE8B7BE43;
     ostream.write((char *) &datetime.b, 4);
 
     byteint size;
-    size.i = 1;
+    size.i = 0;//1;
     ostream.write((char *) &size.b, 4);
     ostream.write((char *) &size.b, 4);
     size.i = 5;
@@ -81,6 +79,18 @@ void write_local_file_header(dlib::file &file, std::ostream &ostream) {
 void write_file_data(dlib::file &file, std::ostream &ostream) {
     const char *a = "a";
     ostream.write(a, 1);
+
+    byteint datetime;
+
+    datetime.i = 0x08074b50;
+    ostream.write((char *) &datetime.b, 4);
+
+    //crc
+    datetime.i = 0xE8B7BE43;
+    ostream.write((char *) &datetime.b, 4);
+    datetime.i = 1;
+    ostream.write((char *) &datetime.b, 4);
+    ostream.write((char *) &datetime.b, 4);
 }
 
 void write_data_central_directory(dlib::file &file, std::ostream &ostream) {
@@ -109,18 +119,16 @@ void write_data_central_directory(dlib::file &file, std::ostream &ostream) {
     mag.i = (uint32_t) 0x02014b50;
     ostream.write((char *) &mag.b, 4);
 
-    char data[] = {0x3f, 0, 0x0a, 0, 0, 0, 0, 0};
+    char data[] = {0x3f, 0, 0x0a, 0, 8, 0, 0, 0};
     ostream.write((char *) &data, 8);
 
     byteint datetime;
-    time_t time_val = time(NULL);
-    tm *tm = localtime(&time_val);
 
     datetime.i = 0;
     ostream.write((char *) &datetime.b, 4);
 
     //crc
-    datetime.i =0xE8B7BE43;
+    datetime.i = 0xE8B7BE43;
     ostream.write((char *) &datetime.b, 4);
 
     byteint size;
@@ -168,63 +176,8 @@ void write_data_central_directory(dlib::file &file, std::ostream &ostream) {
 
     size.i = 0x33;
     ostream.write((char *) &size.b, 4);
-    size.i = 0x24;//offset
+    size.i = 0x34;//offset
     ostream.write((char *) &size.b, 4);
     size.i = 0;
     ostream.write((char *) &size.b, 2);
-}
-
-//[local file header 1]
-//[encryption header 1]
-//[file data 1]
-//[data descriptor 1]
-//.
-//.
-//.
-//[local file header n]
-//[encryption header n]
-//[file data n]
-//[data descriptor n]
-//[archive decryption header]
-//[archive extra data record]
-//[central directory header 1]
-//.
-//.
-//.
-//[central directory header n]
-//[zip64 end of central directory record]
-//[zip64 end of central directory locator]
-//[end of central directory record]
-
-uint32_t tm_to_dosdate(const struct tm *ptm) {
-    uint32_t year = 0;
-
-#define datevalue_in_range(min, max, value) ((min) <= (value) && (value) <= (max))
-    /* Years supported:
-    * [00, 79] (assumed to be between 2000 and 2079)
-    * [80, 207] (assumed to be between 1980 and 2107, typical output of old
-    software that does 'year-1900' to get a double digit year)
-    * [1980, 2107]
-    Due to the date format limitations, only years between 1980 and 2107 can be stored.
-    */
-    if (!(datevalue_in_range(1980, 2107, ptm->tm_year) || datevalue_in_range(0, 207, ptm->tm_year)) ||
-        !datevalue_in_range(0, 11, ptm->tm_mon) ||
-        !datevalue_in_range(1, 31, ptm->tm_mday) ||
-        !datevalue_in_range(0, 23, ptm->tm_hour) ||
-        !datevalue_in_range(0, 59, ptm->tm_min) ||
-        !datevalue_in_range(0, 59, ptm->tm_sec)) {
-        return 0;
-    }
-#undef datevalue_in_range
-
-    year = (uint32_t) ptm->tm_year;
-    if (year >= 1980) /* range [1980, 2107] */
-        year -= 1980;
-    else if (year >= 80) /* range [80, 99] */
-        year -= 80;
-    else /* range [00, 79] */
-        year += 20;
-
-    return (uint32_t) (((ptm->tm_mday) + (32 * (ptm->tm_mon + 1)) + (512 * year)) << 16) |
-           ((ptm->tm_sec / 2) + (32 * ptm->tm_min) + (2048 * (uint32_t) ptm->tm_hour));
 }
