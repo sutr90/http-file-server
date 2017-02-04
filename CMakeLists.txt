@@ -13,3 +13,4 @@ set(MY_LIBS sqlite3)
 
 add_subdirectory(file-server)
 add_subdirectory(url-generator)
+add_subdirectory(zip-stream)
