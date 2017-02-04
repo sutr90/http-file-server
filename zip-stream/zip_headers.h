@@ -28,10 +28,8 @@ public:
     const uint16_t INTERNAL_ATTRIBUTES = 0x0000;
     const uint32_t EXTERNAL_ATTRIBUTES = 0x0000;
     uint32_t relative_offset = 0;
-    local_file_header *local_header = nullptr;
 
-    central_directory_header(local_file_header *local) :
-            local_header(local) {}
+    central_directory_header(local_file_header *local) {}
 
     uint32_t get_size();
 };

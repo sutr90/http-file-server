@@ -21,10 +21,6 @@ void write_16bit(std::ostream &stream, uint16_t data) {
 
 void zip_archive::add(dlib::file &file) {
     files.emplace_back(local_file_header(file));
-    edr.disk_entries++;
-    edr.directory_entries++;
-    edr.directory_size += files.back().get_directory_entry_size();
-    edr.offset += files.back().get_entry_size();
 }
 
 void zip_archive::stream(std::ostream &stream) {
@@ -38,7 +34,10 @@ void zip_archive::stream(std::ostream &stream) {
         it->central_header.relative_offset = relative_offset;
         it->central_header.relative_offset -= files.begin()->get_entry_size();// offset of first entry is 0, by subtracting first entry size, we get correct offset
         it->write_directory_header(stream);
-        edr.offset += it->data_desc.decompressed_size;
+        edr.disk_entries++;
+        edr.directory_entries++;
+        edr.directory_size += it->get_directory_entry_size();
+        edr.offset += it->get_entry_size();
     }
 
     edr.write(stream);
@@ -46,12 +45,12 @@ void zip_archive::stream(std::ostream &stream) {
 
 
 uint32_t local_file_header::get_directory_entry_size() {
-    return central_header.get_size();
+    return central_header.get_size() + file_name_len + EXTRA_FIELD_LEN;
 }
 
 uint32_t local_file_header::get_entry_size() {
     // static + variable + data descriptor
-    return 30 + file_name_len + EXTRA_FIELD_LEN + 16;
+    return 30 + file_name_len + EXTRA_FIELD_LEN + 16 + data_desc.compressed_size;
 }
 
 void local_file_header::write_local_header(std::ostream &stream) {
@@ -119,7 +118,7 @@ void local_file_header::write_directory_header(std::ostream &stream) {
 }
 
 uint32_t central_directory_header::get_size() {
-    return 46 + local_header->file_name_len + local_header->EXTRA_FIELD_LEN + COMMENT_LENGTH;
+    return 46 + COMMENT_LENGTH;
 }
 
 void data_descriptor::write(std::ostream &stream) {
