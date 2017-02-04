@@ -13,6 +13,8 @@ public:
     uint32_t decompressed_size;
 
     data_descriptor() {};
+
+    void write(std::ostream &stream);
 };
 
 class local_file_header;
@@ -31,10 +33,11 @@ public:
     central_directory_header(local_file_header *local) :
             local_header(local) {}
 
+    uint32_t get_size();
 };
 
 class local_file_header {
-protected:
+public:
     dlib::file &file_ref;
 
     const uint32_t MAGIC = 0x04034b50;
@@ -51,14 +54,25 @@ protected:
 
     data_descriptor data_desc;
     central_directory_header central_header;
-public:
+    std::string &zip_name;
+
     local_file_header(dlib::file &file) : local_file_header(file, file.name()) {};
 
     local_file_header(dlib::file &file, std::string zip_name) :
             file_ref(file),
             file_name_len((uint16_t) zip_name.length()),
-            central_header(this) {};
+            central_header(this),
+            zip_name(zip_name) {};
 
+    uint32_t get_directory_entry_size();
+
+    uint32_t get_entry_size();
+
+    void write_local_header(std::ostream &stream);
+
+    void write_file_data_update_descriptor(std::ostream &stream);
+
+    void write_directory_header(std::ostream &stream);
 };
 
 class end_directory_record {
@@ -73,6 +87,8 @@ public:
     const uint16_t COMMENT_LENGTH = 0x0000;
 
     end_directory_record() {};
+
+    void write(std::ostream &stream) ;
 };
 
 class zip_archive {
@@ -84,6 +100,8 @@ private:
 public:
     void add(dlib::file &file);
 //    void add(dlib::directory &directory);
+
+    void stream(std::ostream &stream);
 };
 
 
