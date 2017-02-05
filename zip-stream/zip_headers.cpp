@@ -43,13 +43,19 @@ void zip_archive::stream(std::ostream &stream) {
 }
 
 zip_archive::zip_archive(dlib::file &file) {
-    zip_file zf(file, "");
+    size_t index = file.full_name().find(file.name());
+    std::string prefix = file.full_name().substr(0, index);
+
+    zip_file zf(file, prefix);
     add(zf);
 }
 
 zip_archive::zip_archive(dlib::directory &dir) {
     dlib::match_all m;
-    std::string parent_name = dir.get_parent().full_name() + dir.get_separator();
+    std::string parent_name = dir.get_parent().full_name();
+
+    if (!dir.get_parent().is_root()) parent_name + dir.get_separator();
+
     auto files = get_files_in_directory_tree(dir, m);
     for (auto it = files.begin(); it != files.end(); ++it) {
         zip_file zf(*it, parent_name);
@@ -92,9 +98,8 @@ void local_file_header::write_file_data_update_descriptor(std::ostream &stream) 
         std::ifstream in(full_name, std::ifstream::binary);
         uint32_t current = 0;
         int buffer_size = 64 * 1024;
-        char buffer[buffer_size];
 
-        std::vector<char> buffer_vec(64*1024);
+        std::vector<char> buffer_vec(64 * 1024);
 
         uint32_t filesize = (uint32_t) file_size; //TODO
 

@@ -2,8 +2,8 @@
 #include "zip_headers.h"
 
 int main() {
-    dlib::directory dir("D:\\a\\b");
-    dlib::file file("D:\\testLog.log.gz");
+    dlib::directory dir("D:\\localtexmf");
+    dlib::file file("D:\\PeopleCounter.zip");
 
     std::ofstream zip_stream("D:\\test_new.zip", std::ios::out | std::ios::binary);
 

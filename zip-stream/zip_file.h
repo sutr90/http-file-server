@@ -9,8 +9,6 @@ private:
 
     std::string generate_zip_name(dlib::file &df, const std::string &path_prefix);
 
-    std::string generate_zip_name(dlib::directory &df, const std::string &path_prefix);
-
     uint32_t size;
 public:
     std::string zipname;
@@ -22,12 +20,8 @@ public:
     uint32_t get_filesize();
 
     zip_file(dlib::file &df, const std::string &path_prefix) : fullname(df.full_name()),
-                                                               zipname(df.name()),
+                                                               zipname(generate_zip_name(df, path_prefix)),
                                                                size(df.size()) {};
-
-    zip_file(dlib::directory &df, const std::string &path_prefix) : fullname(df.full_name()),
-                                                                    zipname(generate_zip_name(df, path_prefix)),
-                                                                    size(0) {};
 };
 
 #endif //PROJECT_ZIP_FILE_H
