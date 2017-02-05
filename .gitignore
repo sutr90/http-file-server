@@ -65,3 +65,6 @@
 *.su
 
 /.idea
+
+build/
+cmake-build*/
