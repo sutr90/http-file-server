@@ -2,18 +2,12 @@
 #include "zip_headers.h"
 
 int main() {
-    dlib::file file("D:\\a\\a.txt");
-    dlib::directory dir("D:\\a");
-    dlib::file file2("D:\\b.txt");
+    dlib::directory dir("D:\\a\\b");
+    dlib::file file("D:\\testLog.log.gz");
 
     std::ofstream zip_stream("D:\\test_new.zip", std::ios::out | std::ios::binary);
 
-    zip_file f(file, "D:\\");
-    zip_file f2(file2, "D:\\");
-
-    zip_archive zip(dir);
-//    zip.add(f);
-//    zip.add(f2);
+    zip_archive zip(file);
 
     zip.stream(zip_stream);
 

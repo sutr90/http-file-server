@@ -49,7 +49,7 @@ zip_archive::zip_archive(dlib::file &file) {
 
 zip_archive::zip_archive(dlib::directory &dir) {
     dlib::match_all m;
-    std::string parent_name = dir.get_parent().full_name();
+    std::string parent_name = dir.get_parent().full_name() + dir.get_separator();
     auto files = get_files_in_directory_tree(dir, m);
     for (auto it = files.begin(); it != files.end(); ++it) {
         zip_file zf(*it, parent_name);
