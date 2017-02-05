@@ -93,16 +93,20 @@ void local_file_header::write_file_data_update_descriptor(std::ostream &stream) 
         uint32_t current = 0;
         int buffer_size = 64 * 1024;
         char buffer[buffer_size];
+
+        std::vector<char> buffer_vec(64*1024);
+
         uint32_t filesize = (uint32_t) file_size; //TODO
 
         dlib::crc32 crc;
 
         while (current < filesize) {
-            in.read(buffer, buffer_size);
+            in.read(&buffer_vec[0], buffer_size);
             std::streamsize bytes = in.gcount();
-            stream.write(buffer, bytes);
+            buffer_vec.resize(bytes);
+            stream.write(&buffer_vec[0], bytes);
             current += bytes;
-            crc.add(buffer);
+            crc.add(buffer_vec);
         }
 
         in.close();
