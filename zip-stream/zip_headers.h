@@ -3,6 +3,7 @@
 
 
 #include <dlib/dir_nav.h>
+#include "zip_file.h"
 
 
 class data_descriptor {
@@ -36,7 +37,7 @@ public:
 
 class local_file_header {
 public:
-    dlib::file &file_ref;
+    zip_file &file_ref;
 
     const uint32_t MAGIC = 0x04034b50;
     const uint16_t VERSION_EXTRACT = 0x000a;
@@ -54,9 +55,9 @@ public:
     central_directory_header central_header;
     std::string zip_name;
 
-    local_file_header(dlib::file &file) : local_file_header(file, file.name()) {};
+    local_file_header(zip_file &file) : local_file_header(file, file.zipname) {};
 
-    local_file_header(dlib::file &file, std::string zip_name) :
+    local_file_header(zip_file &file, std::string zip_name) :
             file_ref(file),
             file_name_len((uint16_t) zip_name.length()),
             central_header(this),
@@ -96,7 +97,7 @@ private:
     end_directory_record edr;
 
 public:
-    void add(dlib::file &file);
+    void add(zip_file &file);
 //    void add(dlib::directory &directory);
 
     void stream(std::ostream &stream);

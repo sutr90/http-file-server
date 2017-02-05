@@ -19,7 +19,7 @@ void write_16bit(std::ostream &stream, uint16_t data) {
     stream.write(&byte2, 1);
 }
 
-void zip_archive::add(dlib::file &file) {
+void zip_archive::add(zip_file &file) {
     files.emplace_back(local_file_header(file));
 }
 
@@ -30,9 +30,8 @@ void zip_archive::stream(std::ostream &stream) {
 
     uint32_t relative_offset = 0;
     for (auto it = files.begin(); it != files.end(); ++it) {
-        relative_offset += it->get_entry_size();
         it->central_header.relative_offset = relative_offset;
-        it->central_header.relative_offset -= files.begin()->get_entry_size();// offset of first entry is 0, by subtracting first entry size, we get correct offset
+        relative_offset += it->get_entry_size();
         it->write_directory_header(stream);
         edr.disk_entries++;
         edr.directory_entries++;
@@ -73,27 +72,32 @@ void local_file_header::write_local_header(std::ostream &stream) {
 }
 
 void local_file_header::write_file_data_update_descriptor(std::ostream &stream) {
-    std::ifstream in(file_ref.full_name(), std::ifstream::binary);
-    uint32_t current = 0;
-    int buffer_size = 64 * 1024;
-    char buffer[buffer_size];
-    uint32_t filesize = (uint32_t) file_ref.size(); //TODO
+    if (file_ref.get_filesize() != 0) {
 
-    dlib::crc32 crc;
+        std::ifstream in(file_ref.get_full_name(), std::ifstream::binary);
+        uint32_t current = 0;
+        int buffer_size = 64 * 1024;
+        char buffer[buffer_size];
+        uint32_t filesize = (uint32_t) file_ref.get_filesize(); //TODO
 
-    while (current < filesize) {
-        in.read(buffer, buffer_size);
-        std::streamsize bytes = in.gcount();
-        stream.write(buffer, bytes);
-        current += bytes;
-        crc.add(buffer);
+        dlib::crc32 crc;
+
+        while (current < filesize) {
+            in.read(buffer, buffer_size);
+            std::streamsize bytes = in.gcount();
+            stream.write(buffer, bytes);
+            current += bytes;
+            crc.add(buffer);
+        }
+
+        in.close();
+        data_desc.crc32 = crc.get_checksum();
+    } else {
+        data_desc.crc32 = 0;
     }
 
-    in.close();
-
-    data_desc.compressed_size = filesize;
-    data_desc.decompressed_size = filesize;
-    data_desc.crc32 = crc.get_checksum();
+    data_desc.compressed_size = file_ref.get_filesize();
+    data_desc.decompressed_size = file_ref.get_filesize();
 }
 
 void local_file_header::write_directory_header(std::ostream &stream) {
