@@ -42,6 +42,21 @@ void zip_archive::stream(std::ostream &stream) {
     edr.write(stream);
 }
 
+zip_archive::zip_archive(dlib::file &file) {
+    zip_file zf(file, "");
+    add(zf);
+}
+
+zip_archive::zip_archive(dlib::directory &dir) {
+    dlib::match_all m;
+    std::string parent_name = dir.get_parent().full_name();
+    auto files = get_files_in_directory_tree(dir, m);
+    for (auto it = files.begin(); it != files.end(); ++it) {
+        zip_file zf(*it, parent_name);
+        add(zf);
+    }
+}
+
 
 uint32_t local_file_header::get_directory_entry_size() {
     return central_header.get_size() + file_name_len + EXTRA_FIELD_LEN;
@@ -72,13 +87,13 @@ void local_file_header::write_local_header(std::ostream &stream) {
 }
 
 void local_file_header::write_file_data_update_descriptor(std::ostream &stream) {
-    if (file_ref.get_filesize() != 0) {
+    if (file_size != 0) {
 
-        std::ifstream in(file_ref.get_full_name(), std::ifstream::binary);
+        std::ifstream in(full_name, std::ifstream::binary);
         uint32_t current = 0;
         int buffer_size = 64 * 1024;
         char buffer[buffer_size];
-        uint32_t filesize = (uint32_t) file_ref.get_filesize(); //TODO
+        uint32_t filesize = (uint32_t) file_size; //TODO
 
         dlib::crc32 crc;
 
@@ -96,8 +111,8 @@ void local_file_header::write_file_data_update_descriptor(std::ostream &stream) 
         data_desc.crc32 = 0;
     }
 
-    data_desc.compressed_size = file_ref.get_filesize();
-    data_desc.decompressed_size = file_ref.get_filesize();
+    data_desc.compressed_size = file_size;
+    data_desc.decompressed_size = file_size;
 }
 
 void local_file_header::write_directory_header(std::ostream &stream) {

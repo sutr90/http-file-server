@@ -37,8 +37,6 @@ public:
 
 class local_file_header {
 public:
-    zip_file &file_ref;
-
     const uint32_t MAGIC = 0x04034b50;
     const uint16_t VERSION_EXTRACT = 0x000a;
     const uint16_t FLAGS = 0x0008;
@@ -54,11 +52,14 @@ public:
     data_descriptor data_desc;
     central_directory_header central_header;
     std::string zip_name;
+    std::string full_name;
+    uint32_t file_size;
 
     local_file_header(zip_file &file) : local_file_header(file, file.zipname) {};
 
     local_file_header(zip_file &file, std::string zip_name) :
-            file_ref(file),
+            full_name(file.get_full_name()),
+            file_size(file.get_filesize()),
             file_name_len((uint16_t) zip_name.length()),
             central_header(this),
             zip_name(zip_name) {};
@@ -101,6 +102,10 @@ public:
 //    void add(dlib::directory &directory);
 
     void stream(std::ostream &stream);
+
+    zip_archive(dlib::file &file);
+    zip_archive(dlib::directory &dir);
+
 };
 
 
