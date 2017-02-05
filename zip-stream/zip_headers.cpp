@@ -54,7 +54,9 @@ zip_archive::zip_archive(dlib::directory &dir) {
     dlib::match_all m;
     std::string parent_name = dir.get_parent().full_name();
 
-    if (!dir.get_parent().is_root()) parent_name + dir.get_separator();
+    if (!dir.get_parent().is_root()) {
+        parent_name += dir.get_separator();
+    }
 
     auto files = get_files_in_directory_tree(dir, m);
     for (auto it = files.begin(); it != files.end(); ++it) {

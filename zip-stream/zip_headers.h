@@ -9,7 +9,7 @@
 class data_descriptor {
 public:
     const uint32_t MAGIC = 0x08074b50;
-    uint32_t crc32 =0;
+    uint32_t crc32 = 0;
     uint32_t compressed_size = 0;
     uint32_t decompressed_size = 0;
 
@@ -30,7 +30,7 @@ public:
     const uint32_t EXTERNAL_ATTRIBUTES = 0x0000;
     uint32_t relative_offset = 0;
 
-    central_directory_header(local_file_header *local) {}
+    central_directory_header() {}
 
     uint32_t get_size();
 };
@@ -58,11 +58,11 @@ public:
     local_file_header(zip_file &file) : local_file_header(file, file.zipname) {};
 
     local_file_header(zip_file &file, std::string zip_name) :
-            full_name(file.get_full_name()),
-            file_size(file.get_filesize()),
             file_name_len((uint16_t) zip_name.length()),
-            central_header(this),
-            zip_name(zip_name) {};
+            central_header(),
+            zip_name(zip_name),
+            full_name(file.get_full_name()),
+            file_size(file.get_filesize()) {};
 
     uint32_t get_directory_entry_size();
 
@@ -104,6 +104,7 @@ public:
     void stream(std::ostream &stream);
 
     zip_archive(dlib::file &file);
+
     zip_archive(dlib::directory &dir);
 
 };

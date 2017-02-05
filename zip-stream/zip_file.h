@@ -20,8 +20,8 @@ public:
     uint32_t get_filesize();
 
     zip_file(dlib::file &df, const std::string &path_prefix) : fullname(df.full_name()),
-                                                               zipname(generate_zip_name(df, path_prefix)),
-                                                               size(df.size()) {};
+                                                               size(df.size()),
+                                                               zipname(generate_zip_name(df, path_prefix)) {};
 };
 
 #endif //PROJECT_ZIP_FILE_H

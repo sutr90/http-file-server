@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra")
+
 if (WIN32)
     include_directories(D:\\tmp\\dlib)
     find_library(DLIB_LIBRARY dlib HINTS D:\\tmp\\dlib\\cmake-build-release\\dlib)
