@@ -5,17 +5,40 @@
 #include <dlib/dir_nav.h>
 #include "zip_file.h"
 
+class zip64_end_of_central_dir {
+public:
+    const uint32_t MAGIC = 0x06064b50;
+    const uint64_t RECORD_SIZE = 44;
+    const uint16_t VERSION_MADE_BY = 0x003f;
+    const uint16_t VERSION_EXTRACT = 0x002D;
+    const uint32_t DISK_NUMBER = 0x00000000;
+    const uint32_t START_DISK_NUMBER = 0x00000000;
+    uint64_t disk_entries = 0;
+    uint64_t directory_entries = 0;
+    uint64_t directory_size = 0;
+    uint64_t offset = 0;
+};
+
+class zip64_end_of_central_dir_locator {
+public:
+    const uint32_t MAGIC = 0x07064b50;
+    const uint32_t DISK_NUMBER = 0x00000000;
+    uint64_t offset = 0;
+    const uint32_t DISKS_COUNT = 0x00000001;
+};
 
 class data_descriptor {
 public:
     const uint32_t MAGIC = 0x08074b50;
     uint32_t crc32 = 0;
-    uint32_t compressed_size = 0;
-    uint32_t decompressed_size = 0;
+    uint64_t compressed_size = 0;
+    uint64_t decompressed_size = 0;
 
     data_descriptor() {};
 
     void write(std::ostream &stream);
+
+    uint8_t get_size();
 };
 
 class local_file_header;
@@ -25,11 +48,11 @@ public:
     const uint32_t MAGIC = 0x02014b50;
     const uint16_t VERSION_MADE_BY = 0x003f;
     const uint16_t COMMENT_LENGTH = 0x0000;
-    const uint16_t DISK_NUMBER = 0x0000;
+    const uint16_t DISK_NUMBER = 0xFFFF;
     const uint16_t INTERNAL_ATTRIBUTES = 0x0000;
     const uint32_t EXTERNAL_ATTRIBUTES = 0x0000;
-    uint32_t relative_offset = 0;
-
+    const uint16_t EXTRA_FIELD_LEN = 0x0020;
+    uint64_t relative_offset_of_local_header = 0;
     central_directory_header() {}
 
     uint32_t get_size();
@@ -38,7 +61,7 @@ public:
 class local_file_header {
 public:
     const uint32_t MAGIC = 0x04034b50;
-    const uint16_t VERSION_EXTRACT = 0x000a;
+    const uint16_t VERSION_EXTRACT = 0x00A0;
     const uint16_t FLAGS = 0x0008;
     const uint16_t COMPRESSION = 0x0000;
     const uint16_t MOD_TIME = 0x0000;
@@ -66,7 +89,7 @@ public:
 
     uint32_t get_directory_entry_size();
 
-    uint32_t get_entry_size();
+    uint64_t get_entry_size();
 
     void write_local_header(std::ostream &stream);
 
@@ -78,15 +101,19 @@ public:
 class end_directory_record {
 public:
     const uint32_t MAGIC = 0x06054b50;
-    const uint16_t DISK_NUMBER = 0x0000;
-    const uint16_t START_DISK_NUMBER = 0x0000;
-    uint16_t disk_entries = 0;
-    uint16_t directory_entries = 0;
-    uint32_t directory_size = 0;
-    uint32_t offset = 0;
+    const uint16_t DISK_NUMBER = 0xFFFF;
+    const uint16_t START_DISK_NUMBER = 0xFFFF;
+    const uint16_t DISK_ENTRIES = 0xFFFF;
+    const uint16_t DIRECTORY_ENTRIES = 0xFFFF;
+    const uint32_t directory_size = 0xFFFFFFFF;
+    const uint32_t offset = 0xFFFFFFFF;
     const uint16_t COMMENT_LENGTH = 0x0000;
 
-    end_directory_record() {};
+    zip64_end_of_central_dir zip64_end;
+    zip64_end_of_central_dir_locator zip64_locator;
+
+    end_directory_record() : zip64_end(), zip64_locator()
+    {};
 
     void write(std::ostream &stream);
 };
