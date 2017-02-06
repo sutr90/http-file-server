@@ -31,9 +31,38 @@
       .item:hover {
         cursor: pointer
       }
-      .col-xs-1 {
+      .col-xs-1.icon {
         width: 35px;
       }
+
+      .disabled {
+        z-index: 999;
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      .loader-space {
+        display: none;
+        position: absolute;
+        right: 80px;
+      }
+
+      .loader {
+        position: absolute;
+        border: 16px solid #f3f3f3;
+        border-top: 16px solid #d1d1d1;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        margin-left: auto;
+        animation: spin 2s linear infinite;
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
     -->
     </style>
 
@@ -41,7 +70,7 @@
   
 <body>    
   <div class="row centered-form center-block">                                                
-    <div class="container col-md-6 col-md-offset-3">    
+    <div class="container col-md-6 col-md-offset-3">
       <div class="page-header">
         <h1>@Trinity <small>Generování url</small></h1>    
       </div>    
@@ -91,10 +120,9 @@
           </div>    
         </div>    
       </form>                  
-      <div class="panel panel-default">      
+      <div class="panel panel-default">
         <div class="panel-body" id="files">
-          
-        </div>    
+        </div>
       </div>              
     </div>                                       
   </div> 
@@ -142,11 +170,11 @@
           }
                    
           if (item.type === 'file') {
-            $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap" title="' + item.name + '"><div class="col-xs-1"><span class="glyphicon glyphicon-file"></span></div><div class="col-xs-7 col-sm-5">' + item.name + '</div><div class="col-sm-4 hidden-xs">' + date + '</div><div class="col-xs-1 col-lg-2">' + size + '</div></div>'));            
+            $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap" title="' + item.name + '"><div class="col-xs-1 icon"><span class="glyphicon glyphicon-file"></span></div><div class="col-xs-7 col-sm-5">' + item.name + '</div><div class="col-sm-4 hidden-xs">' + date + '</div><div class="col">' + size + '</div></div>'));
           } else if (item.type === 'dir' && item.name !== '..') {
-            $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap" title="' + item.name + '"><div class="col-xs-1"><span class="glyphicon glyphicon-folder-open"></span></div><div class="col-xs-7 col-sm-5">' + item.name + '</div><div class="col-sm-4 hidden-xs">' + date + '</div><div class="col-xs-1 col-lg-2"></div></div>'));
+            $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap" title="' + item.name + '"><div class="col-xs-1 icon"><span class="glyphicon glyphicon-folder-open"></span></div><div class="col-xs-7 col-sm-5">' + item.name + '</div><div class="col-sm-4 hidden-xs">' + date + '</div><div class="col"></div></div>'));
           } else {
-            $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap"><div class="col-xs-1"><span class="glyphicon glyphicon-folder-open"></span></div><div class="col-xs-10">..</div></div>'));
+            $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap"><div class="col-xs-1 icon"><span class="glyphicon glyphicon-folder-open"></span></div><div class="col-xs-10">..</div></div>'));
           }                                                                                                                                                                                                    
           $("#item_" + key).click(function () {
           setUrl(item.path);
@@ -159,12 +187,18 @@
   
     function loadDir(path) {
       path = path.replace(GLOBAL_PATH, '');
+      $("#files").addClass('disabled');
+      $(".loader-space").css('display', 'block');
       $.getJSON( "?path=" + path, function( data ) {
         pasteFiles(data);
       }).error(function() { 
         $('#files').empty();
         $("#files").append($('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">Error:</span> Nastal problém při načítání <strong>' + path + '</strong>'));
-      });    
+      }).always(function() {
+        $("#files").prepend($('<div class="loader-space"><div class="loader"></div></div>'));
+        $("#files").removeClass('disabled');
+        $(".loader-space").css('display', 'none');
+      });
     }
   
     $( document ).ready(function() {
