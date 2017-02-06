@@ -9,7 +9,7 @@ private:
 
     std::string generate_zip_name(dlib::file &df, const std::string &path_prefix);
 
-    uint32_t size;
+    uint64_t size;
 public:
     std::string zipname;
 
@@ -17,7 +17,7 @@ public:
         return fullname;
     }
 
-    uint32_t get_filesize();
+    uint64_t get_filesize();
 
     zip_file(dlib::file &df, const std::string &path_prefix) : fullname(df.full_name()),
                                                                size(df.size()),

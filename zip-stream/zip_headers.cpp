@@ -116,7 +116,7 @@ void local_file_header::write_file_data_update_descriptor(std::ostream &stream) 
     if (file_size != 0) {
 
         std::ifstream in(full_name, std::ifstream::binary);
-        uint32_t current = 0;
+        uint64_t current = 0;
         int buffer_size = 64 * 1024;
 
         std::vector<char> buffer_vec(64 * 1024);
@@ -127,7 +127,7 @@ void local_file_header::write_file_data_update_descriptor(std::ostream &stream) 
 
         while (current < filesize) {
             in.read(&buffer_vec[0], buffer_size);
-            std::streamsize bytes = in.gcount();
+            uint32_t bytes = (uint32_t) in.gcount();
             buffer_vec.resize(bytes);
             stream.write(&buffer_vec[0], bytes);
             current += bytes;

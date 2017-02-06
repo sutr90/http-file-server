@@ -3,8 +3,9 @@
 
 int main() {
     dlib::directory dir("D:\\localtexmf");
-//    dlib::file file("D:\\dev\\nudes\\softcore.tar");
-    dlib::file file("D:\\a.txt");
+//    dlib::file file("D:\\dev\\xampp.tar");
+    dlib::file file("D:\\dev\\nudes\\softcore.tar");
+//    dlib::file file("D:\\a.txt");
 
     std::ofstream zip_stream("D:\\test_new.zip", std::ios::out | std::ios::binary);
 

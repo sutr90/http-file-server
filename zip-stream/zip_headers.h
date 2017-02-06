@@ -76,7 +76,7 @@ public:
     central_directory_header central_header;
     std::string zip_name;
     std::string full_name;
-    uint32_t file_size;
+    uint64_t file_size;
 
     local_file_header(zip_file &file) : local_file_header(file, file.zipname) {};
 

@@ -1,6 +1,6 @@
 #include "zip_file.h"
 
-uint32_t zip_file::get_filesize() {
+uint64_t zip_file::get_filesize() {
     return size;
 }
 
