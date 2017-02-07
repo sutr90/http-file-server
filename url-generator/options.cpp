@@ -1,6 +1,7 @@
 #include <dlib/cmd_line_parser.h>
 #include <dlib/dir_nav.h>
 #include "options.h"
+#include "../file-server/dir_utils.h"
 
 using namespace dlib;
 using namespace std;
@@ -100,8 +101,13 @@ void validate_option(options &opt) {
     }
 
     try {
-        file test(opt.file_name);
+        if(is_path_file(opt.file_name)){
+            file test(opt.file_name);
         opt.file_name = test.full_name();
+        } else {
+            directory test(opt.file_name);
+            opt.file_name = test.full_name();
+        }
     }
     catch (file::file_not_found &e) {
         cout << "File " << opt.file_name << " not found or accessible: " << e.info << endl;

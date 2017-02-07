@@ -9,7 +9,7 @@ set(SOURCE_FILES main.cpp MyServer.cpp MyServer.h throttle.cpp throttle.h file_g
 
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-target_link_libraries(${PROJECT_NAME} ${DLIB_LIBRARY} ${MY_LIBS} url-generator_lib)
+target_link_libraries(${PROJECT_NAME} ${DLIB_LIBRARY} ${MY_LIBS} zip-stream_lib url-generator_lib)
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/config
         ${CMAKE_CURRENT_BINARY_DIR}/config)
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/file.html

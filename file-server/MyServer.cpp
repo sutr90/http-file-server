@@ -1,15 +1,12 @@
 #include "MyServer.h"
+#include "dir_utils.h"
+#include "../zip-stream/zip_headers.h"
 
-void MyServer::stream_http_response(std::ostream &out, outgoing_things outgoing, std::string &filename) {
-    dlib::file file(filename);
-    uint64 filesize = file.size();
-
+void write_header(std::ostream &out, outgoing_things &outgoing, std::string filename, uint64_t filesize) {
     outgoing.headers["Content-Type"] = "application/octet-stream";
     outgoing.headers["Content-Length"] = std::to_string(filesize);
     outgoing.headers["Content-Transfer-Encoding"] = "binary";
-    outgoing.headers["Content-Disposition"] = "attachment; filename=\"" + file.name() + "\"";
-
-
+    outgoing.headers["Content-Disposition"] = "attachment; filename=\"" + filename + "\"";
     out << "HTTP/1.0 " << outgoing.http_return << " " << outgoing.http_return_status << "\r\n";
 
     // Set any new headers
@@ -18,18 +15,34 @@ void MyServer::stream_http_response(std::ostream &out, outgoing_things outgoing,
     }
     out << "\r\n";
 
-    std::ifstream in(file.full_name(), std::ifstream::binary);
-    uint64 current = 0;
+}
 
-    while (current < filesize && out.good()) {
-        in.read(buffer.get(), chunk_size);
-        std::streamsize bytes = in.gcount();
-        out.write(buffer.get(), bytes);
-        current += bytes;
-        t.sleep();
+void MyServer::stream_http_response(std::ostream &out, outgoing_things &outgoing, std::string &filename) {
+    uint64 filesize;
+    if (is_path_file(filename)) {
+        dlib::file file(filename);
+        filesize = file.size();
+        write_header(out, outgoing, filename, filesize);
+
+        std::ifstream in(file.full_name(), std::ifstream::binary);
+        uint64 current = 0;
+
+        while (current < filesize && out.good()) {
+            in.read(buffer.get(), chunk_size);
+            std::streamsize bytes = in.gcount();
+            out.write(buffer.get(), bytes);
+            current += bytes;
+            t.sleep();
+        }
+
+        in.close();
+    } else {
+        dlib::directory dir(filename);
+        zip_archive zip(dir);
+        filesize = zip.get_content_size();
+        write_header(out, outgoing, dir.name() + ".zip", filesize);
+        zip.stream(out);
     }
-
-    in.close();
 }
 
 void
@@ -66,7 +79,7 @@ MyServer::on_connect(std::istream &in, std::ostream &out, const std::string &for
     }
 }
 
-void MyServer::on_request(const incoming_things &incoming, outgoing_things &outgoing, response &response) {
+void MyServer::on_request(const incoming_things &incoming, outgoing_things &, response &response) {
     if (incoming.path != "/") {
         fileguard.get_file(incoming.path, response);
         return;
