@@ -230,7 +230,7 @@
       path = path.replace(GLOBAL_PATH, '');
       $("#files").addClass('disabled');
       $("#files .loader-space").css('display', 'block');
-      $.getJSON( "?path=" + path, function( data ) {
+      $.getJSON( "?path=" + encodeURIComponent(path), function( data ) {
         pasteFiles(data);
       }).error(function() { 
         $('#files').empty();
