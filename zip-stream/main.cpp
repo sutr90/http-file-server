@@ -10,8 +10,8 @@ int main() {
     std::ofstream zip_stream("D:\\test_new.zip", std::ios::out | std::ios::binary);
 
     zip_archive zip(dir);
-    std::cout << zip.get_content_size();
-//    zip.stream(zip_stream);
+//    std::cout << zip.get_content_size();
+    zip.stream(zip_stream);
 
 
 //    zip_file f(file, "D:\\");
