@@ -9,7 +9,9 @@ void write_header(std::ostream &out, outgoing_things &outgoing, const std::strin
     logan << LDEBUG << "[Header] filename: " << filename << " size: " << filesize;
 
     outgoing.headers["Content-Type"] = "application/octet-stream";
-    outgoing.headers["Content-Length"] = std::to_string(filesize);
+    if (filesize > 0) {
+        outgoing.headers["Content-Length"] = std::to_string(filesize);
+    }
     outgoing.headers["Content-Transfer-Encoding"] = "binary";
     outgoing.headers["Content-Disposition"] = "attachment; filename=\"" + filename + "\"";
     out << "HTTP/1.0 " << outgoing.http_return << " " << outgoing.http_return_status << "\r\n";
@@ -48,9 +50,8 @@ void MyServer::stream_http_response(std::ostream &out, outgoing_things &outgoing
         logan << LDEBUG << "'" << filename << "' is directory.";
         dlib::directory dir(filename);
         zip_archive zip(dir);
-        filesize = zip.get_content_size();
         std::string zip_filename = dir.name() + ".zip";
-        write_header(out, outgoing, zip_filename, filesize);
+        write_header(out, outgoing, zip_filename, 0);
         zip.stream(out);
     }
 }
