@@ -66,6 +66,7 @@ zip_archive::zip_archive(dlib::file &file) {
 
     zip_file zf(file, prefix);
     add(zf);
+    content_size = file.size();
 }
 
 zip_archive::zip_archive(dlib::directory &dir) {
@@ -79,6 +80,7 @@ zip_archive::zip_archive(dlib::directory &dir) {
     auto files = get_files_in_directory_tree(dir, m);
     for (auto it = files.begin(); it != files.end(); ++it) {
         zip_file zf(*it, parent_name);
+        content_size += it->size();
         add(zf);
     }
 }

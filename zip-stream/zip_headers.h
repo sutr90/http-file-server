@@ -124,9 +124,12 @@ private:
 
     end_directory_record edr;
 
+    uint64_t content_size = 0;
+
 public:
+    uint64_t get_content_size() { return content_size; };
+
     void add(zip_file &file);
-//    void add(dlib::directory &directory);
 
     void stream(std::ostream &stream);
 
