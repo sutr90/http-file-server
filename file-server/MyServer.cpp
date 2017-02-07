@@ -2,7 +2,12 @@
 #include "dir_utils.h"
 #include "../zip-stream/zip_headers.h"
 
-void write_header(std::ostream &out, outgoing_things &outgoing, std::string filename, uint64_t filesize) {
+const dlib::logger logan("L.server");
+
+void write_header(std::ostream &out, outgoing_things &outgoing, const std::string &filename, uint64_t filesize) {
+    logan << LTRACE << "write_header";
+    logan << LDEBUG << "[Header] filename: " << filename << " size: " << filesize;
+
     outgoing.headers["Content-Type"] = "application/octet-stream";
     outgoing.headers["Content-Length"] = std::to_string(filesize);
     outgoing.headers["Content-Transfer-Encoding"] = "binary";
@@ -14,15 +19,18 @@ void write_header(std::ostream &out, outgoing_things &outgoing, std::string file
         out << ci->first << ": " << ci->second << "\r\n";
     }
     out << "\r\n";
-
 }
 
 void MyServer::stream_http_response(std::ostream &out, outgoing_things &outgoing, std::string &filename) {
+    logan << LTRACE << "MyServer::stream_http_response";
+    logan << LDEBUG << "Preparing to stream " << filename;
+
     uint64 filesize;
     if (is_path_file(filename)) {
+        logan << LDEBUG << "'" << filename << "' is file.";
         dlib::file file(filename);
         filesize = file.size();
-        write_header(out, outgoing, filename, filesize);
+        write_header(out, outgoing, file.name(), filesize);
 
         std::ifstream in(file.full_name(), std::ifstream::binary);
         uint64 current = 0;
@@ -37,10 +45,12 @@ void MyServer::stream_http_response(std::ostream &out, outgoing_things &outgoing
 
         in.close();
     } else {
+        logan << LDEBUG << "'" << filename << "' is directory.";
         dlib::directory dir(filename);
         zip_archive zip(dir);
         filesize = zip.get_content_size();
-        write_header(out, outgoing, dir.name() + ".zip", filesize);
+        std::string zip_filename = dir.name() + ".zip";
+        write_header(out, outgoing, zip_filename, filesize);
         zip.stream(out);
     }
 }
@@ -49,11 +59,15 @@ void
 MyServer::on_connect(std::istream &in, std::ostream &out, const std::string &foreign_ip, const std::string &local_ip,
                      unsigned short foreign_port, unsigned short local_port, uint64) {
     try {
+        logan << LTRACE << "MyServer::on_connect";
+        logan << LINFO << "Client connected: " << foreign_ip;
         incoming_things incoming(foreign_ip, local_ip, foreign_port, local_port);
         outgoing_things outgoing;
 
         parse_http_request(in, incoming, get_max_content_length());
         read_body(in, incoming);
+
+        logan << LINFO << "Client requested path: " << incoming.path;
 
         std::string admin_prefix("/admin");
         //incoming.path[0:prefix.len()] == prefix
@@ -75,16 +89,19 @@ MyServer::on_connect(std::istream &in, std::ostream &out, const std::string &for
         }
     }
     catch (std::exception &e) {
+        logan << LERROR << "MyServer::on_connect: " << e.what();
         write_http_response(out, e);
     }
 }
 
 void MyServer::on_request(const incoming_things &incoming, outgoing_things &, response &response) {
+    logan << LTRACE << "MyServer::on_request";
     if (incoming.path != "/") {
+        logan << LINFO << "Client requested download of file " << incoming.path;
         fileguard.get_file(incoming.path, response);
         return;
     }
-
+    logan << LINFO << "Client requested root: " << incoming.path;
     response.type = STRING;
     response.response = "<html> <body> nothing to see here </body> </html>";
 }

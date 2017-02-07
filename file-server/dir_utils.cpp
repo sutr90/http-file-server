@@ -1,9 +1,12 @@
 #include <dlib/dir_nav.h>
 #include "dir_utils.h"
+#include "../logging.h"
 #include <sys/stat.h>
 
 using namespace std;
 using namespace dlib;
+
+const dlib::logger logan("L.dir_utils");
 
 std::string get_parent_dir_json(dlib::directory &root, dlib::directory &dir);
 
@@ -21,6 +24,7 @@ void write_type_size<dlib::file>(dlib::file &dirfile, std::stringstream &ss) {
 
 
 string get_dir_contents_as_json(dlib::directory &root, dlib::directory &dir) {
+    logan << LTRACE << "get_dir_contents_as_json";
     auto child_dirs = dir.get_dirs();
     auto child_files = dir.get_files();
 
@@ -62,6 +66,7 @@ string get_dir_contents_as_json(dlib::directory &root, dlib::directory &dir) {
 }
 
 std::string get_parent_dir_json(dlib::directory &root, dlib::directory &dir) {
+    logan << LTRACE << "get_parent_dir_json";
     directory parent = dir.get_parent();
     auto tmp = root;
     if (parent.full_name().compare(0, root.full_name().size(), root.full_name()) == 0) {
@@ -78,6 +83,7 @@ long get_date(const std::string &fname) {
 }
 
 bool is_path_file(string &path) {
+    logan << LTRACE << "is_path_file";
     struct stat s;
     if (stat(path.c_str(), &s) == 0) {
         if (s.st_mode & S_IFREG) {
@@ -86,6 +92,7 @@ bool is_path_file(string &path) {
             return false;
         }
     } else {
+        logan << LERROR << "Error when getting stat() of " << path;
         throw std::exception();
     }
 }

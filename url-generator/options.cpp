@@ -41,14 +41,14 @@ options parse_cmd_line(int argc, char **argv) {
 
         parser.check_option_arg_range("c", 1, 65536);
 
-        if(parser.option("r")){
+        if (parser.option("r")) {
             options o;
             o.type = option_type::OPT_REMOVE;
             o.file_name = parser.option("r").argument();
             return o;
         }
 
-        if(parser.option("l")){
+        if (parser.option("l")) {
             options o;
             o.type = option_type::OPT_LIST;
             return o;
@@ -72,7 +72,7 @@ options parse_cmd_line(int argc, char **argv) {
     if (parser.option("t")) {
         o.type = option_type::OPT_TIMER;
         o.time_limit = parse_time(parser.option("t").argument());
-    } else if(parser.option("c")) {
+    } else if (parser.option("c")) {
         o.type = option_type::OPT_COUNTER;
         o.time_limit = 0;
     }
@@ -86,7 +86,7 @@ void validate_option(options &opt) {
 
     //TODO
 
-    if(opt.type != option_type::OPT_TIMER && opt.type != option_type::OPT_COUNTER){
+    if (opt.type != option_type::OPT_TIMER && opt.type != option_type::OPT_COUNTER) {
         throw std::exception();
     }
 
@@ -101,9 +101,9 @@ void validate_option(options &opt) {
     }
 
     try {
-        if(is_path_file(opt.file_name)){
+        if (is_path_file(opt.file_name)) {
             file test(opt.file_name);
-        opt.file_name = test.full_name();
+            opt.file_name = test.full_name();
         } else {
             directory test(opt.file_name);
             opt.file_name = test.full_name();
@@ -132,4 +132,14 @@ uint32 parse_time(const string &time_string) {
     }
 
     return (uint32) (hours * 3600 + minutes * 60);
+}
+
+
+std::ostream &operator<<(std::ostream &os, const options &opt) {
+    os << "[options::count_limit=" << opt.count_limit << endl;
+    os << "options::time_limit=" << opt.time_limit << endl;
+    os << "options::type=" << opt.type << endl;
+    os << "options::file_name=" << opt.file_name << "]";
+
+    return os;
 }

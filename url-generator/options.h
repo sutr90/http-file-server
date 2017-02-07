@@ -18,6 +18,8 @@ struct options {
     option_type type;
 };
 
+std::ostream& operator<<(std::ostream& os, const options& opt);
+
 options parse_cmd_line(int argc, char **argv);
 
 void validate_option(options &opt);
