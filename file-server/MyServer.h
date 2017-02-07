@@ -49,26 +49,24 @@ public:
     virtual ~MyServer() {}
 
 private:
-    bool debug;
-
-    const std::string on_request(const incoming_things &incoming, outgoing_things &outgoing) { return ""; };
-
-    void on_request(const incoming_things &incoming, outgoing_things &outgoing, response &response);
-
+    uint32 chunk_size;
+    std::unique_ptr<char[]> buffer;
+    throttle t;
     database db;
     file_guard fileguard;
-    uint32 chunk_size;
-    throttle t;
-    std::unique_ptr<char[]> buffer;
+    bool debug;
+    admin_interface admin;
 
-    void stream_http_response(std::ostream &out, outgoing_things outgoing, std::string &filename);
+    const std::string on_request(const incoming_things &, outgoing_things &) { return ""; };
+
+    void on_request(const incoming_things &incoming, outgoing_things &, response &response);
+
+
+    void stream_http_response(std::ostream &out, outgoing_things &outgoing, std::string &filename);
 
     virtual void on_connect(std::istream &in, std::ostream &out, const std::string &foreign_ip,
                             const std::string &local_ip, unsigned short foreign_port, unsigned short local_port,
                             uint64);
-
-    admin_interface admin;
-
 };
 
 #endif //SERVER_MYSERVER_H

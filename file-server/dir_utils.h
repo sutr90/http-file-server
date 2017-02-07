@@ -23,4 +23,6 @@ void generate_json(std::stringstream &ss, DF &dirfile) {
     ss << "}";
 }
 
+bool is_path_file(std::string &path);
+
 #endif //PROJECT_DIR_UTILS_H
