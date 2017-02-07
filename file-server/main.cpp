@@ -10,6 +10,7 @@ int main() {
     try {
         setup_logging();
         config_reader cr("config");
+        configure_loggers_from_file (cr);
         server_config config(cr);
 
         MyServer file_server(config);

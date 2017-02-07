@@ -10,3 +10,10 @@ server {
     # public domain name of the file server. Include the final slash!!
     domain=http://trinity.ingames.cz/stahovac/
 }
+
+logger_config{
+    logging_level = all
+    L {
+        logging_level = info
+    }
+}
