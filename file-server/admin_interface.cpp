@@ -49,7 +49,7 @@ std::string admin_interface::on_request(dlib::incoming_things &request, dlib::ou
 
         std::string file_id = register_file(db, opt);
         logan << LINFO << "Registered file at URL: " << file_id;
-        return svr_cfg.domain + file_id;
+        return file_id;
     }
 
     if (request.request_type == "GET") {
