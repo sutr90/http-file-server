@@ -311,9 +311,10 @@
           var $btn = $(this).button('loading');
   
           $.post( "admin", { path: path, type: type, expire: expire, count: count}).done(function( data ) {
-            $('#result').slideDown().hide("fade", FADE_SPEED, function(){
+            $('#result').slideDown().hide("fade", FADE_SPEED, function() {
+              var url = document.URL.replace(new RegExp('/admin.*$'), "/" + data);
               $(this).empty();
-              $("#result").append($('<div class="alert alert-success" role="alert"><div class="input-group"><input readonly type="text" id="url" class="form-control" value="' + data + '" /><span class="input-group-btn"><button class="btn btn-default" data-clipboard-target="#url" type="button"><span class="glyphicon glyphicon-copy"></span></button></span></div></div>'))
+              $("#result").append($('<div class="alert alert-success" role="alert"><div class="input-group"><input readonly type="text" id="url" class="form-control" value="' + url + '" /><span class="input-group-btn"><button class="btn btn-default" data-clipboard-target="#url" type="button"><span class="glyphicon glyphicon-copy"></span></button></span></div></div>'))
               .show("fade", FADE_SPEED);
             });           
           }).fail(function() { 
@@ -328,7 +329,7 @@
         
         }
       });
-      
+
       $("#prefix").click(function(){loadDir(GLOBAL_PATH); setUrl(GLOBAL_PATH);}).append(GLOBAL_PATH);
 
       $(".tab-gen").click(function(){
