@@ -211,15 +211,12 @@
             $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap"><div class="col-xs-1 icon"><span class="glyphicon glyphicon-folder-open"></span></div><div class="col-xs-10">..</div></div>'));
           }                                                                                                                                                                                                    
           $("#item_" + key).click(function () {
-		  var styles = {
-            border: "1px solid #6666FFaa",
-            border-radius: "3px",
-            background: "lightcyan",
-          };
-		  $(this).css('background-color', '#ff0000');
           setUrl(item.path);
           if (item.type === 'dir') {
             loadDir(item.path);
+          }else{
+            $('div[id^="item_"]').css({"border":"none","background":"none"});
+            $(this).css({"border":"1px solid #6666FFaa","border-radius":"3px","background":"lightcyan"});
           }
         });
       });
