@@ -61,7 +61,7 @@ public:
 class local_file_header {
 public:
     const uint32_t MAGIC = 0x04034b50;
-    const uint16_t VERSION_EXTRACT = 0x00A0;
+    const uint16_t VERSION_EXTRACT = 0x002D;
     const uint16_t FLAGS = 0x0008;
     const uint16_t COMPRESSION = 0x0000;
     const uint16_t MOD_TIME = 0x0000;

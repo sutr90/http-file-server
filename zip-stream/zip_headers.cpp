@@ -43,7 +43,7 @@ void zip_archive::stream(std::ostream &stream) {
         it->write_local_header(stream);
     }
 
-    uint32_t relative_offset = 0;
+    uint64_t relative_offset = 0;
     for (auto it = files.begin(); it != files.end(); ++it) {
         it->central_header.relative_offset_of_local_header = relative_offset;
         relative_offset += it->get_entry_size();

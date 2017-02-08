@@ -2,7 +2,7 @@
 #include "zip_headers.h"
 
 int main() {
-    dlib::directory dir("D:\\localtexmf");
+    dlib::directory dir("C:\\Users\\VF\\Downloads\\Season 01");
 //    dlib::file file("D:\\dev\\xampp.tar");
     dlib::file file("D:\\dev\\nudes\\softcore.tar");
 //    dlib::file file("D:\\a.txt");
