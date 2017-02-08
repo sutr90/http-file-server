@@ -1,7 +1,7 @@
 #include <dlib/dir_nav.h>
+#include <sys/stat.h>
 #include "dir_utils.h"
 #include "../logging.h"
-#include <sys/stat.h>
 
 using namespace std;
 using namespace dlib;
@@ -82,17 +82,4 @@ long get_date(const std::string &fname) {
     return t_stat.st_ctime;
 }
 
-bool is_path_file(string &path) {
-    logan << LTRACE << "is_path_file";
-    struct stat s;
-    if (stat(path.c_str(), &s) == 0) {
-        if (s.st_mode & S_IFREG) {
-            return true;
-        } else {
-            return false;
-        }
-    } else {
-        logan << LERROR << "Error when getting stat() of " << path;
-        throw std::exception();
-    }
-}
+

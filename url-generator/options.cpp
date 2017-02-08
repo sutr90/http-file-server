@@ -1,7 +1,7 @@
 #include <dlib/cmd_line_parser.h>
 #include <dlib/dir_nav.h>
 #include "options.h"
-#include "../file-server/dir_utils.h"
+#include "../utils.h"
 
 using namespace dlib;
 using namespace std;
