@@ -1,4 +1,3 @@
-#include <signal.h>
 #include "MyServer.h"
 #include "../logging.h"
 
@@ -13,6 +12,7 @@ void my_handler(int s){
 }
 
 int main() {
+#ifdef UNIX
     struct sigaction sigIntHandler;
 
     sigIntHandler.sa_handler = my_handler;
@@ -20,6 +20,7 @@ int main() {
     sigIntHandler.sa_flags = 0;
 
     sigaction(SIGINT, &sigIntHandler, NULL);
+#endif
     try {
         setup_logging();
         config_reader cr("config");
@@ -31,7 +32,11 @@ int main() {
         logan << LINFO << "Starting server on port " << config.port;
         file_server.set_listening_port(config.port);
         file_server.start_async();
+#ifdef UNIX
         pause();
+#else
+        getchar();
+#endif
     }
     catch (exception &e) {
         logan << LERROR << "Error " << e.what();
