@@ -11,7 +11,7 @@ const dlib::logger logan("L.dir_utils");
 std::string get_parent_dir_json(dlib::directory &root, dlib::directory &dir);
 
 template<>
-void write_type_size<dlib::directory>(dlib::directory &dirfile, std::stringstream &ss) {
+void write_type_size<dlib::directory>(dlib::directory &, std::stringstream &ss) {
     ss << "\"type\":\"dir\",";
     ss << "\"size\":null,";
 };
