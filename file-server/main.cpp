@@ -12,7 +12,7 @@ void my_handler(int s){
 }
 
 int main() {
-#ifdef UNIX
+#ifdef linux
     struct sigaction sigIntHandler;
 
     sigIntHandler.sa_handler = my_handler;
@@ -32,9 +32,10 @@ int main() {
         logan << LINFO << "Starting server on port " << config.port;
         file_server.set_listening_port(config.port);
         file_server.start_async();
-#ifdef UNIX
+#ifdef linux
         pause();
 #else
+	cout << "press enter to end";
         getchar();
 #endif
     }
