@@ -1,5 +1,5 @@
 #include "zip_headers.h"
-#include <dlib/crc32.h>
+#include "zip_streamer.h"
 
 void write_64bit(std::ostream &stream, std::uint64_t v) {
     static const uint8_t max_byte = 0xFF; // Let the compiler hardcode this constant.
@@ -118,24 +118,12 @@ void local_file_header::write_file_data_update_descriptor(std::ostream &stream) 
     if (file_size != 0) {
 
         std::ifstream in(full_name, std::ifstream::binary);
-        uint64_t current = 0;
-        int buffer_size = 64 * 1024;
 
-        std::vector<char> buffer_vec(buffer_size);
-
-        dlib::crc32 crc;
-
-        while (current < file_size) {
-            in.read(&buffer_vec[0], buffer_size);
-            uint32_t bytes = (uint32_t) in.gcount();
-            buffer_vec.resize(bytes);
-            stream.write(&buffer_vec[0], bytes);
-            current += bytes;
-            crc.add(buffer_vec);
-        }
-
+        zip_streamer_file zsf;
+        zsf.stream_data(in, stream);
         in.close();
-        data_desc.crc32 = crc.get_checksum();
+
+        data_desc.crc32 = zsf.get_crc_checksum();
     } else {
         data_desc.crc32 = 0;
     }

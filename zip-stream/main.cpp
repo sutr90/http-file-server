@@ -2,13 +2,11 @@
 #include "zip_headers.h"
 
 int main() {
-    //    dlib::file file("D:\\dev\\xampp.tar");
-//    dlib::file file("D:\\dev\\nudes\\softcore.tar");
     dlib::file file("D:\\a.txt");
-
+    dlib::directory dir("d:\\localtexmf");
     std::ofstream zip_stream("D:\\test_new.zip", std::ios::out | std::ios::binary);
 
-    zip_archive zip(file);
+    zip_archive zip(dir);
     std::cout << zip.get_archive_size();
     zip.stream(zip_stream);
 
