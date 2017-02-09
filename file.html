@@ -72,6 +72,11 @@
         padding: 16px;
         padding-bottom: 0
       }
+	  
+	  .highlight-row {
+		outline: 1px solid #6666FFaa;
+		background: lightcyan;
+	  }
 
     -->
     </style>
@@ -214,9 +219,9 @@
           setUrl(item.path);
           if (item.type === 'dir') {
             loadDir(item.path);
-          }else{
-            $('div[id^="item_"]').css({"border":"none","background":"none"});
-            $(this).css({"border":"1px solid #6666FFaa","border-radius":"3px","background":"lightcyan"});
+          } else{
+            $('div[id^="item_"]').removeClass("highlight-row");
+            $(this).addClass("highlight-row");
           }
         });
       });
