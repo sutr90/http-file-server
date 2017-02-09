@@ -4,6 +4,7 @@
 
 #include <dlib/dir_nav.h>
 #include "zip_file.h"
+#include "zip_streamer.h"
 
 class zip64_end_of_central_dir {
 public:
@@ -105,9 +106,9 @@ public:
 
     uint64_t get_size();
 
-    void write_local_header(std::ostream &stream);
+    void write_local_header(zip_streamer_file &streamer, std::ostream &stream);
 
-    void write_file_data_update_descriptor(std::ostream &stream);
+    void write_file_data_update_descriptor(zip_streamer_file &stream, std::ostream &ostream);
 
     void write_directory_header(std::ostream &stream);
 };
@@ -141,6 +142,8 @@ private:
 
     uint64_t archive_size = edr.get_size();
 
+    zip_streamer_file zsf;
+
 public:
     uint64_t get_archive_size() { return archive_size; };
 
@@ -148,9 +151,9 @@ public:
 
     void stream(std::ostream &stream);
 
-    zip_archive(dlib::file &file);
+    zip_archive(dlib::file &file, const zip_streamer_file &zsf = zip_streamer_file());
 
-    zip_archive(dlib::directory &dir);
+    zip_archive(dlib::directory &dir, const zip_streamer_file &zsf = zip_streamer_file());
 
 };
 

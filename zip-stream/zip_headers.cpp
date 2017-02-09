@@ -42,7 +42,7 @@ void zip_archive::add(zip_file &file) {
 
 void zip_archive::stream(std::ostream &stream) {
     for (auto it = files.begin(); it != files.end(); ++it) {
-        it->write_local_header(stream);
+        it->write_local_header(zsf, stream);
     }
 
     uint64_t relative_offset = 0;
@@ -62,7 +62,7 @@ void zip_archive::stream(std::ostream &stream) {
     edr.write(stream);
 }
 
-zip_archive::zip_archive(dlib::file &file) {
+zip_archive::zip_archive(dlib::file &file, const zip_streamer_file &zsf) : zsf(zsf) {
     size_t index = file.full_name().find(file.name());
     std::string prefix = file.full_name().substr(0, index);
 
@@ -70,7 +70,7 @@ zip_archive::zip_archive(dlib::file &file) {
     add(zf);
 }
 
-zip_archive::zip_archive(dlib::directory &dir) {
+zip_archive::zip_archive(dlib::directory &dir, const zip_streamer_file &zsf) : zsf(zsf) {
     dlib::match_all m;
     std::string parent_name = dir.full_name();
 
@@ -95,7 +95,7 @@ uint64_t local_file_header::get_size() {
     return 30 + file_name_len + data_desc.get_size() + file_size;
 }
 
-void local_file_header::write_local_header(std::ostream &stream) {
+void local_file_header::write_local_header(zip_streamer_file &streamer, std::ostream &stream) {
     write_32bit(stream, MAGIC);
     write_16bit(stream, VERSION_EXTRACT);
     write_16bit(stream, FLAGS);
@@ -110,20 +110,18 @@ void local_file_header::write_local_header(std::ostream &stream) {
     // for consistency reasons
     stream.write(zip_name.c_str(), file_name_len);
     //file data
-    write_file_data_update_descriptor(stream);
+    write_file_data_update_descriptor(streamer, stream);
     data_desc.write(stream);
 }
 
-void local_file_header::write_file_data_update_descriptor(std::ostream &stream) {
+void local_file_header::write_file_data_update_descriptor(zip_streamer_file &streamer, std::ostream &ostream) {
     if (file_size != 0) {
 
         std::ifstream in(full_name, std::ifstream::binary);
-
-        zip_streamer_file zsf;
-        zsf.stream_data(in, stream);
+        streamer.stream_data(in, ostream);
         in.close();
 
-        data_desc.crc32 = zsf.get_crc_checksum();
+        data_desc.crc32 = streamer.get_crc_checksum();
     } else {
         data_desc.crc32 = 0;
     }
