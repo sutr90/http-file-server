@@ -96,7 +96,10 @@ public:
             central_header(),
             zip_name(zip_name),
             full_name(file.get_full_name()),
-            file_size(file.get_filesize()) {};
+            file_size(file.get_filesize()) {
+        data_desc.compressed_size = file_size;
+        data_desc.decompressed_size = file_size;
+    };
 
     uint32_t get_directory_entry_size();
 

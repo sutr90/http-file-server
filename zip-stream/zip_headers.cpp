@@ -121,9 +121,7 @@ void local_file_header::write_file_data_update_descriptor(std::ostream &stream) 
         uint64_t current = 0;
         int buffer_size = 64 * 1024;
 
-        std::vector<char> buffer_vec(64 * 1024);
-
-//        uint64_t filesize = file_size;
+        std::vector<char> buffer_vec(buffer_size);
 
         dlib::crc32 crc;
 
@@ -141,9 +139,6 @@ void local_file_header::write_file_data_update_descriptor(std::ostream &stream) 
     } else {
         data_desc.crc32 = 0;
     }
-
-    data_desc.compressed_size = file_size;
-    data_desc.decompressed_size = file_size;
 }
 
 void local_file_header::write_directory_header(std::ostream &stream) {
