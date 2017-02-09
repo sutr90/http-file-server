@@ -51,7 +51,7 @@ void MyServer::stream_http_response(std::ostream &out, outgoing_things &outgoing
         dlib::directory dir(filename);
         zip_archive zip(dir);
         std::string zip_filename = dir.name() + ".zip";
-        write_header(out, outgoing, zip_filename, 0);
+        write_header(out, outgoing, zip_filename, zip.get_archive_size());
         zip.stream(out);
     }
 }
