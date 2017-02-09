@@ -6,7 +6,8 @@ int main() {
     dlib::directory dir("d:\\localtexmf");
     std::ofstream zip_stream("D:\\test_new.zip", std::ios::out | std::ios::binary);
 
-    zip_archive zip(dir);
+    zip_streamer_file zsf;
+    zip_archive zip(dir, zsf);
     std::cout << zip.get_archive_size();
     zip.stream(zip_stream);
 

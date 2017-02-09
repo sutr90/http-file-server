@@ -20,7 +20,7 @@ public:
 
     zip_streamer_file(uint32_t buffer_size = 64 * 1024) : streamer(buffer_size), crc() {};
 
-    virtual void stream_data(std::istream &in, std::ostream &out);
+    void stream_data(std::istream &in, std::ostream &out);
 };
 
 

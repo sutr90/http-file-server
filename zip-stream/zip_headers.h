@@ -142,7 +142,7 @@ private:
 
     uint64_t archive_size = edr.get_size();
 
-    zip_streamer_file zsf;
+    zip_streamer_file &zsf;
 
 public:
     uint64_t get_archive_size() { return archive_size; };
@@ -151,9 +151,9 @@ public:
 
     void stream(std::ostream &stream);
 
-    zip_archive(dlib::file &file, const zip_streamer_file &zsf = zip_streamer_file());
+    zip_archive(dlib::file &file, zip_streamer_file &zsf);
 
-    zip_archive(dlib::directory &dir, const zip_streamer_file &zsf = zip_streamer_file());
+    zip_archive(dlib::directory &dir, zip_streamer_file &zsf );
 
 };
 

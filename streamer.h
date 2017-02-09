@@ -17,7 +17,7 @@ protected:
     virtual void after_buffer_write() = 0;
 
 public:
-    void stream_data(std::istream &in, std::ostream &out);
+    virtual void stream_data(std::istream &in, std::ostream &out);
 };
 
 #endif //PROJECT_STREAMER_H_H

@@ -28,6 +28,7 @@ void MyServer::stream_http_response(std::ostream &out, outgoing_things &outgoing
     logan << LTRACE << "MyServer::stream_http_response";
     logan << LDEBUG << "Preparing to stream " << filename;
 
+        streamer_network sn(t, chunk_size);
     uint64 filesize;
     if (is_path_file(filename)) {
         logan << LDEBUG << "'" << filename << "' is file.";
@@ -36,23 +37,14 @@ void MyServer::stream_http_response(std::ostream &out, outgoing_things &outgoing
         write_header(out, outgoing, file.name(), filesize);
 
         std::ifstream in(file.full_name(), std::ifstream::binary);
-//        uint64 current = 0;
-//
-//        while (current < filesize && out.good()) {
-//            in.read(buffer.get(), chunk_size);
-//            std::streamsize bytes = in.gcount();
-//            out.write(buffer.get(), bytes);
-//            current += bytes;
-//            t.sleep();
-//        }
-        streamer_network sn(t, chunk_size);
         sn.stream_data(in, out);
 
         in.close();
     } else {
         logan << LDEBUG << "'" << filename << "' is directory.";
         dlib::directory dir(filename);
-        zip_archive zip(dir);
+        zip_streamer_network zsn(sn);
+        zip_archive zip(dir, zsn);
         std::string zip_filename = dir.name() + ".zip";
         write_header(out, outgoing, zip_filename, zip.get_archive_size());
         zip.stream(out);

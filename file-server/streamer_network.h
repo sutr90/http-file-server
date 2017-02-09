@@ -16,17 +16,18 @@ protected:
 
     void process_data(std::vector<char> &) {};
 
-    void after_buffer_write();
+    virtual void after_buffer_write();
 public:
     streamer_network(throttle &throttle, uint32_t chunk_size) : streamer(chunk_size), t(throttle) {};
 };
 
-class zip_streamer_network : protected zip_streamer_file {
+class zip_streamer_network : public zip_streamer_file {
 private:
     streamer_network &net_streamer;
-protected:
+public:
     zip_streamer_network(streamer_network &net_streamer) : net_streamer(net_streamer) {}
 
+protected:
     void after_buffer_write() {
         net_streamer.after_buffer_write();
     }

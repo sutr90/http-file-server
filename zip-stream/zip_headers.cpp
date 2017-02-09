@@ -1,5 +1,4 @@
 #include "zip_headers.h"
-#include "zip_streamer.h"
 
 void write_64bit(std::ostream &stream, std::uint64_t v) {
     static const uint8_t max_byte = 0xFF; // Let the compiler hardcode this constant.
@@ -62,7 +61,7 @@ void zip_archive::stream(std::ostream &stream) {
     edr.write(stream);
 }
 
-zip_archive::zip_archive(dlib::file &file, const zip_streamer_file &zsf) : zsf(zsf) {
+zip_archive::zip_archive(dlib::file &file, zip_streamer_file &zsf) : zsf(zsf) {
     size_t index = file.full_name().find(file.name());
     std::string prefix = file.full_name().substr(0, index);
 
@@ -70,7 +69,7 @@ zip_archive::zip_archive(dlib::file &file, const zip_streamer_file &zsf) : zsf(z
     add(zf);
 }
 
-zip_archive::zip_archive(dlib::directory &dir, const zip_streamer_file &zsf) : zsf(zsf) {
+zip_archive::zip_archive(dlib::directory &dir, zip_streamer_file &zsf) : zsf(zsf) {
     dlib::match_all m;
     std::string parent_name = dir.full_name();
 
