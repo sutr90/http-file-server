@@ -17,6 +17,10 @@ public:
     uint64_t directory_entries = 0;
     uint64_t directory_size = 0;
     uint64_t offset = 0;
+
+    inline uint64_t get_size() {
+        return 56;
+    }
 };
 
 class zip64_end_of_central_dir_locator {
@@ -25,6 +29,10 @@ public:
     const uint32_t DISK_NUMBER = 0x00000000;
     uint64_t offset = 0;
     const uint32_t DISKS_COUNT = 0x00000001;
+
+    inline uint64_t get_size() {
+        return 20;
+    }
 };
 
 class data_descriptor {
@@ -38,7 +46,9 @@ public:
 
     void write(std::ostream &stream);
 
-    uint8_t get_size();
+    inline uint64_t get_size() {
+        return 24;
+    }
 };
 
 class local_file_header;
@@ -53,6 +63,7 @@ public:
     const uint32_t EXTERNAL_ATTRIBUTES = 0x0000;
     const uint16_t EXTRA_FIELD_LEN = 0x0020;
     uint64_t relative_offset_of_local_header = 0;
+
     central_directory_header() {}
 
     uint32_t get_size();
@@ -89,7 +100,7 @@ public:
 
     uint32_t get_directory_entry_size();
 
-    uint64_t get_entry_size();
+    uint64_t get_size();
 
     void write_local_header(std::ostream &stream);
 
@@ -112,10 +123,11 @@ public:
     zip64_end_of_central_dir zip64_end;
     zip64_end_of_central_dir_locator zip64_locator;
 
-    end_directory_record() : zip64_end(), zip64_locator()
-    {};
+    end_directory_record() : zip64_end(), zip64_locator() {};
 
     void write(std::ostream &stream);
+
+    uint64_t get_size() { return 22 + zip64_end.get_size() + zip64_locator.get_size(); }
 };
 
 class zip_archive {
@@ -124,10 +136,10 @@ private:
 
     end_directory_record edr;
 
-    uint64_t content_size = 0;
+    uint64_t archive_size = edr.get_size();
 
 public:
-    uint64_t get_content_size() { return content_size; };
+    uint64_t get_archive_size() { return archive_size; };
 
     void add(zip_file &file);
 
