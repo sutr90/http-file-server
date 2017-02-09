@@ -214,6 +214,9 @@
           setUrl(item.path);
           if (item.type === 'dir') {
             loadDir(item.path);
+          }else{
+            $('div[id^="item_"]').css({"border":"none","background":"none"});
+            $(this).css({"border":"1px solid #6666FFaa","border-radius":"3px","background":"lightcyan"});
           }
         });
       });
