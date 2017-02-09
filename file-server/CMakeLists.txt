@@ -5,7 +5,7 @@ if (WIN32)
     set(MY_LIBS ${MY_LIBS} ws2_32 winmm)
 endif (WIN32)
 
-set(SOURCE_FILES main.cpp MyServer.cpp MyServer.h throttle.cpp throttle.h file_guard.cpp file_guard.h ../limit_type.h admin_interface.cpp admin_interface.h dir_utils.cpp dir_utils.h ../logging.h ../logging.cpp ../streamer.h ../streamer.cpp network_streamer.cpp network_streamer.h)
+set(SOURCE_FILES main.cpp MyServer.cpp MyServer.h throttle.cpp throttle.h file_guard.cpp file_guard.h ../limit_type.h admin_interface.cpp admin_interface.h dir_utils.cpp dir_utils.h ../logging.h ../logging.cpp ../streamer.h ../streamer.cpp streamer_network.cpp streamer_network.h)
 
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

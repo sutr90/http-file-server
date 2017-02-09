@@ -7,17 +7,18 @@
 #include "../zip-stream/zip_streamer.h"
 #include "throttle.h"
 
-class streamer_network : protected streamer {
+class streamer_network : public streamer {
     friend class zip_streamer_network;
 
 private:
     throttle &t;
 protected:
-    streamer_network(throttle &throttle, uint32_t chunk_size) : streamer(chunk_size), t(throttle) {};
 
     void process_data(std::vector<char> &) {};
 
     void after_buffer_write();
+public:
+    streamer_network(throttle &throttle, uint32_t chunk_size) : streamer(chunk_size), t(throttle) {};
 };
 
 class zip_streamer_network : protected zip_streamer_file {

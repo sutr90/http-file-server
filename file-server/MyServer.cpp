@@ -1,6 +1,7 @@
 #include "MyServer.h"
 #include "../zip-stream/zip_headers.h"
 #include "../utils.h"
+#include "streamer_network.h"
 
 const dlib::logger logan("L.server");
 
@@ -35,15 +36,17 @@ void MyServer::stream_http_response(std::ostream &out, outgoing_things &outgoing
         write_header(out, outgoing, file.name(), filesize);
 
         std::ifstream in(file.full_name(), std::ifstream::binary);
-        uint64 current = 0;
-
-        while (current < filesize && out.good()) {
-            in.read(buffer.get(), chunk_size);
-            std::streamsize bytes = in.gcount();
-            out.write(buffer.get(), bytes);
-            current += bytes;
-            t.sleep();
-        }
+//        uint64 current = 0;
+//
+//        while (current < filesize && out.good()) {
+//            in.read(buffer.get(), chunk_size);
+//            std::streamsize bytes = in.gcount();
+//            out.write(buffer.get(), bytes);
+//            current += bytes;
+//            t.sleep();
+//        }
+        streamer_network sn(t, chunk_size);
+        sn.stream_data(in, out);
 
         in.close();
     } else {
