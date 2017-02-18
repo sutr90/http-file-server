@@ -101,7 +101,7 @@ void file_record::to_json(std::stringstream &ss) {
     ss << "\"file_id\":\"" << file_id << "\",";
     ss << "\"path\":\"" << path << "\",";
     ss << "\"limit_type\":\"" << limit_type << "\",";
-    ss << "\"dl_counter\":\"" << dl_counter << "\",";
-    ss << "\"time_limit\":\"" << time_limit << "\"";
+    ss << "\"dl_counter\":" << dl_counter << ",";
+    ss << "\"time_limit\":" << time_limit;
     ss << "}";
 }
