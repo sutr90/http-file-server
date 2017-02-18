@@ -7,6 +7,10 @@
 
 const dlib::logger logan("L.admin");
 
+bool is_param_set(const std::string &param, dlib::key_value_map &request_data) {
+    return request_data.find(param) != request_data.end();
+}
+
 std::string admin_interface::on_request(dlib::incoming_things &request, dlib::outgoing_things &things) {
     logan << LTRACE << "admin_interface::on_request";
     if (request.path == "/admin" && request.request_type == "GET") {
@@ -52,7 +56,7 @@ std::string admin_interface::on_request(dlib::incoming_things &request, dlib::ou
         return file_id;
     }
 
-    if (request.request_type == "GET") {
+    if (request.request_type == "GET" && is_param_set(std::string("path"), request.queries)) {
         logan << LINFO << "Client requested " << request.path << " using GET";
         // get params from GET request.queries
         std::string dir_name = root_dir.full_name() + root_dir.get_separator() + request.queries["path"];
