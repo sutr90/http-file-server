@@ -81,6 +81,10 @@
             padding-bottom: 0
         }
 
+        .number {
+            text-align: right;
+        }
+
         .highlight-row {
             outline: 1px solid #6666FFaa;
             background: lightcyan;
@@ -247,13 +251,11 @@
     function pasteLinks(links) {
         $('#links').empty();
         $.each(links, function (key, item) {
-            console.warn(item);
             $("#links").append($(
                 '<div id="link_' + key + '" class="item row text-nowrap" title="' + item.file_id + '">' +
                 '<div class="col-sm-3 col-xs-6">' + item.file_id + '</div>' +
-                '<div class="col-sm-6 hidden-xs">' + item.path + '</div>' +
-                '<div class="col-xs-1">' + item.dl_counter + 'x</div>' +
-                '<div class="col-sm-2 col-xs-4">' + Math.round(item.time_limit / 60) + ' min</div>' +
+                '<div class="col-sm-7 hidden-xs">' + item.path + '</div>' +
+                ((item.limit_type == 'C') ? '<div class="col-sm-2 number">' + item.dl_counter + 'x</div>' : '<div class="col-sm-2 number">' + Math.round(item.time_limit / 60) + ' min</div>') +
                 '</div>'));
             $("#link_" + key).click(function () {
                 displayDownloadURL(item.file_id);
