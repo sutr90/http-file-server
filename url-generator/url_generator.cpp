@@ -80,7 +80,7 @@ void unregister_file(dlib::database &db, options &opt) {
 
 void get_list_registered_files(dlib::database &db, std::vector<file_record> &files) {
     dlib::statement st(db,
-                       "select `file_id` , `file_path` , `limit_type` , `dl_counter` , `limit_timestamp` - strftime('%s','now') from files");
+                       "select `file_id` , `file_path` , `limit_type` , `dl_counter` , `limit_timestamp` - strftime('%s','now') from files order by `file_id`");
     st.exec();
 
 
