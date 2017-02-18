@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,357 +8,394 @@
     <title>@Trinity - Generování url</title>
 
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
     <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+          integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 
     <style type="text/css">
-    <!--
-      .item > div {
-        overflow:hidden;
-        white-space:nowrap;
-        text-overflow:ellipsis;
-      }
-      .item:hover, .tab-gen, .tab-links {
-        cursor: pointer
-      }
-      .col-xs-1.icon {
-        width: 35px;
-      }
+        <!--
+        .item > div {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
 
-      .disabled {
-        z-index: 999;
-        opacity: 0.6;
-        pointer-events: none;
-      }
+        .item:hover, .tab-gen, .tab-links {
+            cursor: pointer
+        }
 
-      .loader-space {
-        display: none;
-        position: absolute;
-        right: 80px;
-      }
+        .col-xs-1.icon {
+            width: 35px;
+        }
 
-      .loader {
-        position: absolute;
-        border: 16px solid #f3f3f3;
-        border-top: 16px solid #d1d1d1;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        margin-left: auto;
-        animation: spin 2s linear infinite;
-      }
+        .disabled {
+            z-index: 999;
+            opacity: 0.6;
+            pointer-events: none;
+        }
 
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
+        .loader-space {
+            display: none;
+            position: absolute;
+            right: 80px;
+        }
 
-      .page {
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-        border-top: none;
-        padding: 16px;
-        padding-bottom: 0
-      }
-	  
-	  .highlight-row {
-		outline: 1px solid #6666FFaa;
-		background: lightcyan;
-	  }
+        .loader {
+            position: absolute;
+            border: 16px solid #f3f3f3;
+            border-top: 16px solid #d1d1d1;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-left: auto;
+            animation: spin 2s linear infinite;
+        }
 
-    -->
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .page {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            border-top: none;
+            padding: 16px;
+            padding-bottom: 0
+        }
+
+        .number {
+            text-align: right;
+        }
+
+        .highlight-row {
+            outline: 1px solid #6666FFaa;
+            background: lightcyan;
+        }
+
+        -->
     </style>
 
-  </head>
-  
-<body>    
-  <div class="row centered-form center-block">                                                
+</head>
+
+<body>
+<div class="row centered-form center-block">
     <div class="container col-md-6 col-md-offset-3">
-      <div class="page-header">
-        <h1>@Trinity</h1>
-      </div>
-
-      <ul class="nav nav-tabs">
-        <li class="active"><a class="tab-gen">Generování url</a></li>
-        <li><a class="tab-links">Aktivní url</a></li>
-      </ul>
-
-      <div class="page">
-
-        <div id="result"></div>
-
-        <div class="page-gen">
-
-          <form id="form">
-            <div class="row">
-              <div class="col-md-6">
-                <div class="form-group input-group-count">
-                  <label for="count">Počet stažení</label>
-                  <div class="input-group">
-                    <span class="input-group-addon">
-                      <input type="radio" checked name="type" value="count" />
-                    </span>
-                    <input type="number" name="count" min="1" max="100000" value="5" class="form-control" />
-                  </div>
-                  <span style="display:none" class="help-block">Počet musí být v intervalu &lt;1,100000&gt;</span>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="form-group input-group-expire">
-                  <label for="expire">Doba platnosti</label>
-                  <div class="input-group">
-                    <span class="input-group-addon">
-                      <input type="radio" name="type" value="expire" />
-                    </span>
-                    <input type="time" name="expire" value="01:00" disabled class="form-control" />
-                  </div>
-                  <span style="display:none" class="help-block">Platnost musí být ve formátu HH:SS.</span>
-                </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-lg-12">
-                <div class="form-group input-group-path">
-                  <label for="path">Cesta k souboru</label>
-                  <div class="input-group">
-                    <span class="input-group-addon item" id="prefix"></span>
-                    <input type="text" name="path" class="form-control" />
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" name="go" data-loading-text="<i class='glyphicon glyphicon-refresh gly-spin'></i> Vygeneruj" type="button">Vygeneruj</button>
-                    </span>
-                  </div>
-                  <span style="display:none" class="help-block">Nebyla vyplněna cesta k souboru.</span>
-                </div>
-              </div>
-            </div>
-          </form>
-          <div class="panel panel-default">
-            <div class="panel-body" id="files">
-              <div class="loader-space"><div class="loader"></div></div>
-              <br /><br />
-            </div>
-          </div>
+        <div class="page-header">
+            <h1>@Trinity</h1>
         </div>
 
+        <ul class="nav nav-tabs">
+            <li class="active"><a class="tab-gen">Generování url</a></li>
+            <li><a class="tab-links">Aktivní url</a></li>
+        </ul>
 
-        <div style="display: none" class="page-links">
-          <div class="panel panel-default">
-            <div class="panel-body" id="links">
-              <div class="loader-space"><div class="loader"></div></div>
-              <br /><br />
+        <div class="page">
+
+            <div id="result"></div>
+
+            <div class="page-gen">
+
+                <form id="form">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group input-group-count">
+                                <label for="count">Počet stažení</label>
+                                <div class="input-group">
+                    <span class="input-group-addon">
+                      <input type="radio" checked name="type" value="count"/>
+                    </span>
+                                    <input type="number" name="count" min="1" max="100000" value="5"
+                                           class="form-control"/>
+                                </div>
+                                <span style="display:none" class="help-block">Počet musí být v intervalu &lt;1,100000&gt;</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group input-group-expire">
+                                <label for="expire">Doba platnosti</label>
+                                <div class="input-group">
+                    <span class="input-group-addon">
+                      <input type="radio" name="type" value="expire"/>
+                    </span>
+                                    <input type="time" name="expire" value="01:00" disabled class="form-control"/>
+                                </div>
+                                <span style="display:none" class="help-block">Platnost musí být ve formátu HH:SS.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group input-group-path">
+                                <label for="path">Cesta k souboru</label>
+                                <div class="input-group">
+                                    <span class="input-group-addon item" id="prefix"></span>
+                                    <input type="text" name="path" class="form-control"/>
+                                    <span class="input-group-btn">
+                      <button class="btn btn-default" name="go"
+                              data-loading-text="<i class='glyphicon glyphicon-refresh gly-spin'></i> Vygeneruj"
+                              type="button">Vygeneruj</button>
+                    </span>
+                                </div>
+                                <span style="display:none" class="help-block">Nebyla vyplněna cesta k souboru.</span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <div class="panel panel-default">
+                    <div class="panel-body" id="files">
+                        <div class="loader-space">
+                            <div class="loader"></div>
+                        </div>
+                        <br/><br/>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
 
-      </div>
-    </div>                                       
-  </div> 
-     
-  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->    
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>    
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-  
-   <!-- Latest compiled and minified JavaScript -->    
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.16/clipboard.min.js"></script>
-    
-  <script>
-  
-    const GLOBAL_PATH = '__GLOBAL_PATH__'; 
-    
+
+            <div style="display: none" class="page-links">
+                <div class="panel panel-default">
+                    <div class="panel-body" id="links">
+                        <div class="loader-space">
+                            <div class="loader"></div>
+                        </div>
+                        <br/><br/>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.5.16/clipboard.min.js"></script>
+
+<script>
+
+    const GLOBAL_PATH = '__GLOBAL_PATH__';
+
     const FADE_SPEED = 150;
-    
-    function setUrl(url) {
-       url = url.replace(GLOBAL_PATH, '');
-       $('input[name="path"]').val(url);
-    }  
-  
-    function pasteFiles(files) {
-      $('#files').empty();
-        $.each( files, function( key, item ) {
-        
-          var date = '';
-          if (item.date !== null) {
-            date = new Date(item.date*1000).toISOString().slice(0,19).replace('T',' ');
-          }
 
-          var size = '';
-          if (item.size !== null) {
-            if (item.size > 1024*1024*1024) {
-              size = Math.round(item.size / (1024*1024*1024) * 100) / 100 + ' GB'; 
-            } else if (item.size > 1024*1024) {
-              size = Math.round(item.size / (1024*1024) * 100) / 100 + ' MB'; 
-            } else if (item.size > 1024) {
-              size = Math.round(item.size / 1024 * 100) / 100 + ' kB'; 
-            } else {
-              size = item.size + ' B';
+    function setUrl(url) {
+        url = url.replace(GLOBAL_PATH, '');
+        $('input[name="path"]').val(url);
+    }
+
+    function pasteFiles(files) {
+        $('#files').empty();
+        $.each(files, function (key, item) {
+
+            var date = '';
+            if (item.date !== null) {
+                date = new Date(item.date * 1000).toISOString().slice(0, 19).replace('T', ' ');
             }
-          }
-                   
-          if (item.type === 'file') {
-            $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap" title="' + item.name + '"><div class="col-xs-1 icon"><span class="glyphicon glyphicon-file"></span></div><div class="col-xs-7 col-sm-5">' + item.name + '</div><div class="col-sm-4 hidden-xs">' + date + '</div><div class="col">' + size + '</div></div>'));
-          } else if (item.type === 'dir' && item.name !== '..') {
-            $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap" title="' + item.name + '"><div class="col-xs-1 icon"><span class="glyphicon glyphicon-folder-open"></span></div><div class="col-xs-7 col-sm-5">' + item.name + '</div><div class="col-sm-4 hidden-xs">' + date + '</div><div class="col"></div></div>'));
-          } else {
-            $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap"><div class="col-xs-1 icon"><span class="glyphicon glyphicon-folder-open"></span></div><div class="col-xs-10">..</div></div>'));
-          }                                                                                                                                                                                                    
-          $("#item_" + key).click(function () {
-          setUrl(item.path);
-          if (item.type === 'dir') {
-            loadDir(item.path);
-          } else{
-            $('div[id^="item_"]').removeClass("highlight-row");
-            $(this).addClass("highlight-row");
-          }
+
+            var size = '';
+            if (item.size !== null) {
+                if (item.size > 1024 * 1024 * 1024) {
+                    size = Math.round(item.size / (1024 * 1024 * 1024) * 100) / 100 + ' GB';
+                } else if (item.size > 1024 * 1024) {
+                    size = Math.round(item.size / (1024 * 1024) * 100) / 100 + ' MB';
+                } else if (item.size > 1024) {
+                    size = Math.round(item.size / 1024 * 100) / 100 + ' kB';
+                } else {
+                    size = item.size + ' B';
+                }
+            }
+
+            if (item.type === 'file') {
+                $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap" title="' + item.name + '"><div class="col-xs-1 icon"><span class="glyphicon glyphicon-file"></span></div><div class="col-xs-7 col-sm-5">' + item.name + '</div><div class="col-sm-4 hidden-xs">' + date + '</div><div class="col">' + size + '</div></div>'));
+            } else if (item.type === 'dir' && item.name !== '..') {
+                $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap" title="' + item.name + '"><div class="col-xs-1 icon"><span class="glyphicon glyphicon-folder-open"></span></div><div class="col-xs-7 col-sm-5">' + item.name + '</div><div class="col-sm-4 hidden-xs">' + date + '</div><div class="col"></div></div>'));
+            } else {
+                $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap"><div class="col-xs-1 icon"><span class="glyphicon glyphicon-folder-open"></span></div><div class="col-xs-10">..</div></div>'));
+            }
+            $("#item_" + key).click(function () {
+                setUrl(item.path);
+                if (item.type === 'dir') {
+                    loadDir(item.path);
+                } else {
+                    $('div[id^="item_"]').removeClass("highlight-row");
+                    $(this).addClass("highlight-row");
+                }
+            });
         });
-      });
     }
 
     function pasteLinks(links) {
-      $('#links').empty();
-      $.each( links, function( key, item ) {
-        console.warn(item);
-      });
+        $('#links').empty();
+        $.each(links, function (key, item) {
+            $("#links").append($(
+                '<div id="link_' + key + '" class="item row text-nowrap" title="' + item.file_id + '">' +
+                '<div class="col-sm-3 col-xs-6">' + item.file_id + '</div>' +
+                '<div class="col-sm-7 hidden-xs">' + item.path + '</div>' +
+                ((item.limit_type == 'C') ? '<div class="col-sm-2 number">' + item.dl_counter + 'x</div>' : '<div class="col-sm-2 number">' + Math.round(item.time_limit / 60) + ' min</div>') +
+                '</div>'));
+            $("#link_" + key).click(function () {
+                displayDownloadURL(item.file_id);
+            });
+        });
+
     }
 
     function loadDir(path) {
-      path = path.replace(GLOBAL_PATH, '');
-      $("#files").addClass('disabled');
-      $("#files .loader-space").css('display', 'block');
-      $.getJSON( "?path=" + encodeURIComponent(path), function( data ) {
-        pasteFiles(data);
-      }).error(function() { 
-        $('#files').empty();
-        $("#files").append($('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">Error:</span> Nastal problém při načítání <strong>' + path + '</strong>'));
-      }).always(function() {
-        $("#files").prepend($('<div class="loader-space"><div class="loader"></div></div>'));
-        $("#files").removeClass('disabled');
-        $("#files .loader-space").css('display', 'none');
-      });
+        path = path.replace(GLOBAL_PATH, '');
+        $("#files").addClass('disabled');
+        $("#files .loader-space").css('display', 'block');
+        $.getJSON("?path=" + encodeURIComponent(path), function (data) {
+            pasteFiles(data);
+        }).error(function () {
+            $('#files').empty();
+            $("#files").append($('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">Error:</span> Nastal problém při načítání <strong>' + path + '</strong>'));
+        }).always(function () {
+            $("#files").prepend($('<div class="loader-space"><div class="loader"></div></div>'));
+            $("#files").removeClass('disabled');
+            $("#files .loader-space").css('display', 'none');
+        });
     }
 
     function loadLinks() {
-      $("#links").addClass('disabled');
-      $("#links .loader-space").css('display', 'block');
-      $.getJSON( "?links" , function( data ) {
-        pasteLinks(data);
-      }).error(function() {
-        $('#links').empty();
-        $("#links").append($('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">Error:</span> Nastal problém při načítání <strong>odkazů</strong>'));
-      }).always(function() {
-        $("#links").prepend($('<div class="loader-space"><div class="loader"></div></div>'));
-        $("#links").removeClass('disabled');
-        $("#links .loader-space").css('display', 'none');
-      });
+        $("#links").addClass('disabled');
+        $("#links .loader-space").css('display', 'block');
+        $.getJSON("?links", function (data) {
+            pasteLinks(data);
+        }).error(function () {
+            $('#links').empty();
+            $("#links").append($('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">Error:</span> Nastal problém při načítání <strong>odkazů</strong>'));
+        }).always(function () {
+            $("#links").prepend($('<div class="loader-space"><div class="loader"></div></div>'));
+            $("#links").removeClass('disabled');
+            $("#links .loader-space").css('display', 'none');
+        });
     }
 
-    $( document ).ready(function() {
-      new Clipboard('.btn');
-        
-      $("input:radio[name='type']").change(
-        function() {
-          if ($(this).is(":checked") && $(this).val() == 'count') {
-            $('input[name="expire"]').prop('disabled', true);
-            $('input[name="count"]').prop('disabled', false);
-          } else {
-            $('input[name="expire"]').prop('disabled', false);
-            $('input[name="count"]').prop('disabled', true);          
-          }
-      });
-      
-      $("button[name='go']").click(function() {
-        var path = $('input[name="path"]').val();
-        var type = $('input[name="type"]:checked').val();
-        var expire = $('input[name="expire"]').val();
-        var count = parseInt($('input[name="count"]').val());
+    function displayDownloadURL(file_id){
+        $('#result').slideDown().hide("fade", FADE_SPEED, function () {
+            var url = document.URL.replace(new RegExp('/admin.*$'), "/" + file_id);
+            $(this).empty();
+            $("#result").append($('<div class="alert alert-success" role="alert"><div class="input-group"><input readonly type="text" id="url" class="form-control" value="' + url + '" /><span class="input-group-btn"><button class="btn btn-default" data-clipboard-target="#url" type="button"><span class="glyphicon glyphicon-copy"></span></button></span></div></div>'))
+                .show("fade", FADE_SPEED);
+        });
+    }
 
-        $(".input-group-path").removeClass('has-error');
-        $(".input-group-path .help-block").hide('fade', FADE_SPEED);
-        $(".input-group-count").removeClass('has-error');
-        $(".input-group-count .help-block").hide('fade', FADE_SPEED);
-        $(".input-group-expire").removeClass('has-error');
-        $(".input-group-expire .help-block").hide('fade', FADE_SPEED);
-              
-        var ok = true;
-        
-        if (path == null || path.trim().length < 1) {
-          ok = false;
-          $(".input-group-path").addClass('has-error');
-          $(".input-group-path .help-block").show('fade', FADE_SPEED);
-        }
-        
-        if (count == NaN || count == Infinity || count < 1 || count > 100000) {
-          ok = false;
-          $(".input-group-count").addClass('has-error');
-          $(".input-group-count .help-block").show('fade', FADE_SPEED);
-        }
-        
-        
-        var expireData = expire.split(":");
-        if (expireData.length != 2 || parseInt(expireData[0]) < 0 || parseInt(expireData[0]) > 23 || parseInt(expireData[1]) < 0 || parseInt(expireData[1]) > 59 || (parseInt(expireData[0]) == 0 && parseInt(expireData[1]) == 0)) {
-          ok = false;
-          $(".input-group-expire").addClass('has-error');
-          $(".input-group-expire .help-block").show('fade', FADE_SPEED);
-        }
-        
-        if (ok) {
-        
-          var $btn = $(this).button('loading');
-  
-          $.post( "admin", { path: path, type: type, expire: expire, count: count}).done(function( data ) {
-            $('#result').slideDown().hide("fade", FADE_SPEED, function() {
-              var url = document.URL.replace(new RegExp('/admin.*$'), "/" + data);
-              $(this).empty();
-              $("#result").append($('<div class="alert alert-success" role="alert"><div class="input-group"><input readonly type="text" id="url" class="form-control" value="' + url + '" /><span class="input-group-btn"><button class="btn btn-default" data-clipboard-target="#url" type="button"><span class="glyphicon glyphicon-copy"></span></button></span></div></div>'))
-              .show("fade", FADE_SPEED);
-            });           
-          }).fail(function() { 
-            $('#result').slideDown().hide("fade", FADE_SPEED, function(){
-              $(this).empty();
-              $("#result").append($('<div class="alert alert-danger" role="alert">Nepodařilo se vygenerovat odkaz ke stažení</div>'))
-              .show("fade", FADE_SPEED);
-            });                                                                                      
-          }).always(function() {
-            $btn.button('reset');
-          });
-        
-        }
-      });
+    $(document).ready(function () {
+        new Clipboard('.btn');
 
-      $("#prefix").click(function(){loadDir(GLOBAL_PATH); setUrl(GLOBAL_PATH);}).append(GLOBAL_PATH);
+        $("input:radio[name='type']").change(
+            function () {
+                if ($(this).is(":checked") && $(this).val() == 'count') {
+                    $('input[name="expire"]').prop('disabled', true);
+                    $('input[name="count"]').prop('disabled', false);
+                } else {
+                    $('input[name="expire"]').prop('disabled', false);
+                    $('input[name="count"]').prop('disabled', true);
+                }
+            });
 
-      $(".tab-gen").click(function(){
-        $(this).parent().addClass("active");
-        $(".tab-links").parent().removeClass("active");
-        $(".page-links").css("display", "none");
-        $(".page-gen").css("display", "block");
-        loadDir($('input[name="path"]').val());
-      });
+        $("button[name='go']").click(function () {
+            var path = $('input[name="path"]').val();
+            var type = $('input[name="type"]:checked').val();
+            var expire = $('input[name="expire"]').val();
+            var count = parseInt($('input[name="count"]').val());
 
-      $(".tab-links").click(function(){
-        $(this).parent().addClass("active");
-        $(".tab-gen").parent().removeClass("active");
-        $(".page-gen").css("display", "none");
-        $(".page-links").css("display", "block");
-        loadLinks();
-      });
+            $(".input-group-path").removeClass('has-error');
+            $(".input-group-path .help-block").hide('fade', FADE_SPEED);
+            $(".input-group-count").removeClass('has-error');
+            $(".input-group-count .help-block").hide('fade', FADE_SPEED);
+            $(".input-group-expire").removeClass('has-error');
+            $(".input-group-expire .help-block").hide('fade', FADE_SPEED);
 
-      loadDir(GLOBAL_PATH);
-      
+            var ok = true;
+
+            if (path == null || path.trim().length < 1) {
+                ok = false;
+                $(".input-group-path").addClass('has-error');
+                $(".input-group-path .help-block").show('fade', FADE_SPEED);
+            }
+
+            if (count == NaN || count == Infinity || count < 1 || count > 100000) {
+                ok = false;
+                $(".input-group-count").addClass('has-error');
+                $(".input-group-count .help-block").show('fade', FADE_SPEED);
+            }
+
+
+            var expireData = expire.split(":");
+            if (expireData.length != 2 || parseInt(expireData[0]) < 0 || parseInt(expireData[0]) > 23 || parseInt(expireData[1]) < 0 || parseInt(expireData[1]) > 59 || (parseInt(expireData[0]) == 0 && parseInt(expireData[1]) == 0)) {
+                ok = false;
+                $(".input-group-expire").addClass('has-error');
+                $(".input-group-expire .help-block").show('fade', FADE_SPEED);
+            }
+
+            if (ok) {
+
+                var $btn = $(this).button('loading');
+
+                $.post("admin", {path: path, type: type, expire: expire, count: count}).done(function (data) {
+                    displayDownloadURL(data);
+                }).fail(function () {
+                    $('#result').slideDown().hide("fade", FADE_SPEED, function () {
+                        $(this).empty();
+                        $("#result").append($('<div class="alert alert-danger" role="alert">Nepodařilo se vygenerovat odkaz ke stažení</div>'))
+                            .show("fade", FADE_SPEED);
+                    });
+                }).always(function () {
+                    $btn.button('reset');
+                });
+
+            }
+        });
+
+        $("#prefix").click(function () {
+            loadDir(GLOBAL_PATH);
+            setUrl(GLOBAL_PATH);
+        }).append(GLOBAL_PATH);
+
+        $(".tab-gen").click(function () {
+            $(this).parent().addClass("active");
+            $(".tab-links").parent().removeClass("active");
+            $(".page-links").css("display", "none");
+            $(".page-gen").css("display", "block");
+            loadDir($('input[name="path"]').val());
+        });
+
+        $(".tab-links").click(function () {
+            $(this).parent().addClass("active");
+            $(".tab-gen").parent().removeClass("active");
+            $(".page-gen").css("display", "none");
+            $(".page-links").css("display", "block");
+            loadLinks();
+        });
+
+        loadDir(GLOBAL_PATH);
+
     });
-  </script>  
+</script>
 </body>
 </html>
