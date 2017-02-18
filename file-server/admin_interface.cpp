@@ -75,7 +75,24 @@ std::string admin_interface::on_request(dlib::incoming_things &request, dlib::ou
             logan << LERROR << "Directory " << dir_name << " not found: " << e.what();
             return "directory not found";
         }
+    }
 
+    if (request.path == "/admin?links" && request.request_type == "GET") {
+        std::vector<file_record> files;
+        get_list_registered_files(db, files);
+        std::stringstream ss;
+        ss << "[";
+        for (auto it = files.begin(); it != files.end(); ++it) {
+            it->to_json(ss);
+            ss << ",";
+        }
+        // move one char back
+        ss.seekp(-1, ss.cur);
+        // replace last , with ]
+        ss << "]";
+
+
+        return ss.str();
     }
 
     logan << LERROR << "Client requested " << request.path << " using " << request.request_type

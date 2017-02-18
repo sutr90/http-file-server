@@ -15,7 +15,7 @@ std::string generate_file_id(database &db) {
         counter++;
 
         file_id = names::get_random_name();
-        if(counter > 20){
+        if (counter > 20) {
             file_id += to_string(time(NULL));
         }
 
@@ -49,35 +49,27 @@ std::string register_file(database &db, options &opt) {
 }
 
 void list_registered_files(dlib::database &db) {
-    dlib::statement st(db,
-                       "select `file_id` , `file_path` , `limit_type` , `dl_counter` , `limit_timestamp` - strftime('%s','now') from files");
-    st.exec();
+    std::vector<file_record> files;
+    get_list_registered_files(db, files);
 
     cout << "file_id | path | remaining" << endl;
 
-    while (st.move_next()) {
-        string file_id, path, limit_type;
-        int dl_counter, time_limit;
-        st.get_column(0, file_id);
-        st.get_column(1, path);
-        st.get_column(2, limit_type);
-        st.get_column(3, dl_counter);
-        st.get_column(4, time_limit);
-
-        cout << file_id << " | ";
-        cout << path << " | ";
-        if (limit_type == "C") {
-            cout << dl_counter << " downloads";
+    for (auto it = files.begin(); it != files.end(); ++it) {
+        cout << it->file_id << " | ";
+        cout << it->path << " | ";
+        if (it->limit_type == "C") {
+            cout << it->dl_counter << " downloads";
         } else {
-            if (time_limit <= 0) {
+            if (it->time_limit <= 0) {
                 cout << "0 minutes";
             } else {
-                cout << time_limit / 60 << " minutes";
+                cout << it->time_limit / 60 << " minutes";
             }
         }
 
         cout << endl;
     }
+
 }
 
 void unregister_file(dlib::database &db, options &opt) {
@@ -86,3 +78,30 @@ void unregister_file(dlib::database &db, options &opt) {
     st.exec();
 }
 
+void get_list_registered_files(dlib::database &db, std::vector<file_record> &files) {
+    dlib::statement st(db,
+                       "select `file_id` , `file_path` , `limit_type` , `dl_counter` , `limit_timestamp` - strftime('%s','now') from files");
+    st.exec();
+
+
+    while (st.move_next()) {
+        file_record fr;
+        st.get_column(0, fr.file_id);
+        st.get_column(1, fr.path);
+        st.get_column(2, fr.limit_type);
+        st.get_column(3, fr.dl_counter);
+        st.get_column(4, fr.time_limit);
+
+        files.push_back(fr);
+    }
+}
+
+void file_record::to_json(std::stringstream &ss) {
+    ss << "{";
+    ss << "\"file_id\":\"" << file_id << "\",";
+    ss << "\"path\":\"" << path << "\",";
+    ss << "\"limit_type\":\"" << limit_type << "\",";
+    ss << "\"dl_counter\":\"" << dl_counter << "\",";
+    ss << "\"time_limit\":\"" << time_limit << "\"";
+    ss << "}";
+}
