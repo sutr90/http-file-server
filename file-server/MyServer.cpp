@@ -2,6 +2,7 @@
 #include "../zip-stream/zip_headers.h"
 #include "../utils.h"
 #include "streamer_network.h"
+#include "mime_type_detector.h"
 
 const dlib::logger logan("L.server");
 
@@ -9,7 +10,8 @@ void write_header(std::ostream &out, outgoing_things &outgoing, const std::strin
     logan << LTRACE << "write_header";
     logan << LDEBUG << "[Header] filename: " << filename << " size: " << filesize;
 
-    outgoing.headers["Content-Type"] = "application/octet-stream";
+    outgoing.headers["Content-Type"] = mime_type_detector::get_mime_type(dlib::split_on_last(filename, ".").second);
+
     if (filesize > 0) {
         outgoing.headers["Content-Length"] = std::to_string(filesize);
     }
@@ -65,9 +67,7 @@ MyServer::on_connect(std::istream &in, std::ostream &out, const std::string &for
 
         logan << LINFO << "Client requested path: " << incoming.path;
 
-        std::string admin_prefix("/admin");
-        //incoming.path[0:prefix.len()] == prefix
-        if (incoming.path.compare(0, admin_prefix.size(), admin_prefix) == 0) {
+        if (is_prefix("/admin", incoming.path)) {
             std::string response = admin.on_request(incoming, outgoing);
             write_http_response(out, outgoing, response);
         } else {
@@ -92,6 +92,26 @@ MyServer::on_connect(std::istream &in, std::ostream &out, const std::string &for
 
 void MyServer::on_request(const incoming_things &incoming, outgoing_things &, response &response) {
     logan << LTRACE << "MyServer::on_request";
+
+    if (is_prefix("/res/",incoming.path) || is_prefix("/fonts/",incoming.path)) {
+        logan << LINFO << "Client requested resource " << incoming.path << " using GET";
+
+        auto split = split_on_last(incoming.path, "/");
+        std::string filename = split.second;
+        //TODO add check that requested file is in CWD dlib::get_current_dir()
+        //serve resource file
+        try {
+            dlib::file file("res/" + filename);
+            logan << LINFO << "Serving " << file.full_name() << " to client";
+            response.response = file.full_name();
+            response.type = FILE_NAME;
+
+        } catch (dlib::file::file_not_found &exc) {
+            response.type = FILE_NOT_AVAILABLE;
+        }
+        return;
+    }
+
     if (incoming.path != "/") {
         logan << LINFO << "Client requested download of file " << incoming.path;
         fileguard.get_file(incoming.path, response);

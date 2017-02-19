@@ -2,6 +2,7 @@
 #include <sys/stat.h>
 #include "dir_utils.h"
 #include "../logging.h"
+#include "../utils.h"
 
 using namespace std;
 using namespace dlib;
@@ -69,7 +70,7 @@ std::string get_parent_dir_json(dlib::directory &root, dlib::directory &dir) {
     logan << LTRACE << "get_parent_dir_json";
     directory parent = dir.get_parent();
     auto tmp = root;
-    if (parent.full_name().compare(0, root.full_name().size(), root.full_name()) == 0) {
+    if (is_prefix(root.full_name(), parent.full_name())) {
         tmp = parent;
     }
     return "{\"name\":\"..\",\"path\":\"" + tmp.full_name() + tmp.get_separator() +
