@@ -4,7 +4,7 @@
 #include "dir_utils.h"
 #include "../url-generator/url_generator.h"
 #include "MyServer.h"
-#include "mime_type_detector.h"
+#include "../utils.h"
 
 const dlib::logger logan("L.admin");
 
@@ -65,7 +65,7 @@ std::string admin_interface::on_request(dlib::incoming_things &request, dlib::ou
         try {
             dlib::directory tmp(dir_name);
 
-            if (tmp.full_name().compare(0, root_dir.full_name().size(), root_dir.full_name()) == 0) {
+            if (is_prefix(root_dir.full_name(), tmp.full_name())) {
                 logan << LINFO << "Serving content of " << dir_name << " as JSON.";
                 return get_dir_contents_as_json(root_dir, tmp);
             } else {
@@ -89,45 +89,23 @@ std::string admin_interface::on_request(dlib::incoming_things &request, dlib::ou
             it->to_json(ss);
             ss << ",";
         }
-        // move one char back
-        ss.seekp(-1, ss.cur);
-        // replace last , with ]
+
+        if (files.size() > 0) {
+            // move one char back to replace last , with ]
+            ss.seekp(-1, ss.cur);
+        }
         ss << "]";
 
 
         return ss.str();
     }
 
-    std::string resources_prefix("/admin/res/");
-    if (request.path.compare(0, resources_prefix.size(), resources_prefix) == 0) {
-        logan << LINFO << "Client requested resource " << request.path << " using GET";
-
-        std::string filename = request.path.substr(std::string("/admin/").length());
-        //serve resource file
-        try {
-
-            dlib::file file(filename);
-            std::ifstream t(file.full_name());
-            std::stringstream buffer;
-            buffer << t.rdbuf();
-
-            things.headers["Content-Type"] = mime_type_detector::get_mime_type(dlib::split_on_last(file.name(), ".").second);
-
-            logan << LINFO << "Serving " << file.full_name() << " to client";
-            return buffer.str();
-
-        } catch (dlib::file::file_not_found &exc) {
-            logan << LWARN << "Resource " << filename << " not found.";
-            things.http_return = 404;
-            things.http_return_status = "file not found";
-            return "";
-        }
-    }
-
     logan << LERROR << "Client requested " << request.path << " using " << request.request_type
           << " and there is nothing here.";
-    things.http_return = 500;
-    things.http_return_status = "something's wrong";
+    things.
+            http_return = 500;
+    things.
+            http_return_status = "something's wrong";
     return "<img src=\"http://i.imgur.com/nkp8h.jpg\">";
 }
 
