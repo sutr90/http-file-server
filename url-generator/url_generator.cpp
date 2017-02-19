@@ -31,7 +31,7 @@ std::string generate_file_id(database &db) {
 std::string register_file(database &db, options &opt) {
     string file_id = generate_file_id(db);
 
-    dlib::statement st(db, "insert into `files` values (?, ?, ?, ?, strftime('%s','now')+?)");
+    dlib::statement st(db, "insert into `files` values (NULL, ?, ?, ?, ?, strftime('%s','now')+?)");
     st.bind(1, file_id);
     st.bind(2, opt.file_name);
 
@@ -80,7 +80,7 @@ void unregister_file(dlib::database &db, options &opt) {
 
 void get_list_registered_files(dlib::database &db, std::vector<file_record> &files) {
     dlib::statement st(db,
-                       "select `file_id` , `file_path` , `limit_type` , `dl_counter` , `limit_timestamp` - strftime('%s','now') from files order by `file_id`");
+                       "select `file_id` , `file_path` , `limit_type` , `dl_counter` , `limit_timestamp` - strftime('%s','now') from files order by `id` desc");
     st.exec();
 
 
