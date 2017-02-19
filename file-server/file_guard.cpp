@@ -10,7 +10,7 @@ void file_guard::get_file(std::string url, response &response) {
     std::string file_id = url.substr(pos + 1);
 
     //CREATE TABLE "files" ( `file_id` TEXT UNIQUE, `file_path` TEXT, `limit_type` TEXT DEFAULT 'C', `dl_counter` INTEGER DEFAULT 0, `limit_timestamp` INTEGER, PRIMARY KEY(`file_id`) )
-    dlib::statement st2(db, "select `file_id` , `file_path` , `limit_type` , `dl_counter` , `limit_timestamp` - strftime('%s','now') from `files` where `files`.`file_id` = ? COLLATE NOCASE");
+    dlib::statement st2(db, "select `file_id` , `file_path` , `limit_type` , `dl_counter` , `limit_timestamp` from `files` where `files`.`file_id` = ? COLLATE NOCASE");
     st2.bind(1, file_id);
     st2.exec();
 
@@ -72,7 +72,10 @@ bool file_guard::can_download(int counter, dlib::int64 timestamp, char type) {
 
     if (type == static_cast<char>(dl_limit_type::TIMER)) {
         logan << LDEBUG << "Checking download timer";
-        return get_current_db_time() - timestamp < 0;
+
+        int64 diff = get_current_db_time() - timestamp;
+
+        return diff < 0;
     }
 
     logan << LERROR << "Incorrect limit type: " << type;
