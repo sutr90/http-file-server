@@ -83,6 +83,18 @@
 
         .number {
             text-align: right;
+            padding-right: 5px;
+            min-width: 50px;
+            flex-grow: 1;
+        }
+
+        .size {
+            display: flex;
+        }
+
+        .unit {
+            text-align: left;
+            width: 35px;
         }
 
         .highlight-row {
@@ -217,20 +229,25 @@
             }
 
             var size = '';
+            var unit = '';
             if (item.size !== null) {
                 if (item.size > 1024 * 1024 * 1024) {
-                    size = Math.round(item.size / (1024 * 1024 * 1024) * 100) / 100 + ' GB';
+                    size = Math.round(item.size / (1024 * 1024 * 1024) * 100) / 100;
+                    unit = 'GB';
                 } else if (item.size > 1024 * 1024) {
-                    size = Math.round(item.size / (1024 * 1024) * 100) / 100 + ' MB';
+                    size = Math.round(item.size / (1024 * 1024) * 100) / 100;
+                    unit = 'MB';
                 } else if (item.size > 1024) {
-                    size = Math.round(item.size / 1024 * 100) / 100 + ' kB';
+                    size = Math.round(item.size / 1024 * 100) / 100;
+                    unit = 'kB';
                 } else {
-                    size = item.size + ' B';
+                    size = item.size;
+                    unit = 'B';
                 }
             }
 
             if (item.type === 'file') {
-                $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap" title="' + item.name + '"><div class="col-xs-1 icon"><span class="glyphicon glyphicon-file"></span></div><div class="col-xs-7 col-sm-5">' + item.name + '</div><div class="col-sm-4 hidden-xs">' + date + '</div><div class="col">' + size + '</div></div>'));
+                $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap" title="' + item.name + '"><div class="col-xs-1 icon"><span class="glyphicon glyphicon-file"></span></div><div class="col-xs-7 col-sm-5">' + item.name + '</div><div class="col-sm-4 hidden-xs">' + date + '</div><div class="col size"><div  class="number">' + size + '</div><div class="unit">' + unit + '</div></div></div>'));
             } else if (item.type === 'dir' && item.name !== '..') {
                 $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap" title="' + item.name + '"><div class="col-xs-1 icon"><span class="glyphicon glyphicon-folder-open"></span></div><div class="col-xs-7 col-sm-5">' + item.name + '</div><div class="col-sm-4 hidden-xs">' + date + '</div><div class="col"></div></div>'));
             } else {
