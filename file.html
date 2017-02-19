@@ -214,6 +214,8 @@
 
     const FADE_SPEED = 150;
 
+    var lastDirectory;
+
     function setUrl(url) {
         url = url.replace(GLOBAL_PATH, '');
         $('input[name="path"]').val(url);
@@ -282,6 +284,7 @@
     }
 
     function loadDir(path) {
+        lastDirectory = path;
         path = path.replace(GLOBAL_PATH, '');
         $("#files").addClass('disabled');
         $("#files .loader-space").css('display', 'block');
@@ -399,7 +402,8 @@
             $(".tab-links").parent().removeClass("active");
             $(".page-links").css("display", "none");
             $(".page-gen").css("display", "block");
-            loadDir($('input[name="path"]').val());
+            loadDir(lastDirectory);
+            setUrl(lastDirectory);
         });
 
         $(".tab-links").click(function () {
