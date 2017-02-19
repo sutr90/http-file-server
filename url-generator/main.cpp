@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
     } else if (opt.type == option_type::OPT_LIST) {
         list_registered_files(db);
     } else {
-        string file_id = register_file(db, opt);
+        string file_id = register_file(db, opt, string(""));
         string url = get_option(cr, "generator.domain", "") + file_id;
 
         cout << "Your file - " << opt.file_name << " - is available for download at:" << endl;

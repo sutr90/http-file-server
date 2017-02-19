@@ -51,7 +51,7 @@ std::string admin_interface::on_request(dlib::incoming_things &request, dlib::ou
         logan << LDEBUG << "Client sent following data:\n" << opt;
         validate_option(opt);
 
-        std::string file_id = register_file(db, opt);
+        std::string file_id = register_file(db, opt, request.foreign_ip);
         logan << LINFO << "Registered file at URL: " << file_id;
         return file_id;
     }

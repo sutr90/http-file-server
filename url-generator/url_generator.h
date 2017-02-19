@@ -13,7 +13,7 @@ struct file_record {
     void to_json(std::stringstream &ss);
 };
 
-std::string register_file(dlib::database &db, options &opt);
+std::string register_file(dlib::database &db, options &opt, const std::string &user_id);
 
 void unregister_file(dlib::database &db, options &opt);
 

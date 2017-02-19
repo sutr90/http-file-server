@@ -28,10 +28,10 @@ std::string generate_file_id(database &db) {
     return file_id;
 }
 
-std::string register_file(database &db, options &opt) {
+std::string register_file(dlib::database &db, options &opt, const std::string &user_id) {
     string file_id = generate_file_id(db);
 
-    dlib::statement st(db, "insert into `files` values (NULL, ?, ?, ?, ?, strftime('%s','now')+?)");
+    dlib::statement st(db, "insert into `files` values (NULL, ?, ?, ?, ?, strftime('%s','now')+?, ?)");
     st.bind(1, file_id);
     st.bind(2, opt.file_name);
 
@@ -43,6 +43,7 @@ std::string register_file(database &db, options &opt) {
 
     st.bind(4, opt.count_limit);
     st.bind(5, opt.time_limit);
+    st.bind(6, user_id);
     st.exec();
 
     return file_id;
