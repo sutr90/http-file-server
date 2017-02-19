@@ -97,6 +97,32 @@ std::string admin_interface::on_request(dlib::incoming_things &request, dlib::ou
         return ss.str();
     }
 
+    std::string resources_prefix("/admin/res/");
+    if (request.path.compare(0, resources_prefix.size(), resources_prefix) == 0) {
+        logan << LINFO << "Client requested resource " << request.path << " using GET";
+
+        std::string filename = request.path.substr(std::string("/admin/").length());
+        //serve resource file
+        try {
+
+            dlib::file file(filename);
+            std::ifstream t(file.full_name());
+            std::stringstream buffer;
+            buffer << t.rdbuf();
+            //TODO fix mime type
+            things.headers["Content-Type"] = "text/css";
+
+            logan << LINFO << "Serving " << file.full_name() << " to client";
+            return buffer.str();
+
+        } catch (dlib::file::file_not_found &exc) {
+            logan << LWARN << "Resource " << filename << " not found.";
+            things.http_return = 404;
+            things.http_return_status = "file not found";
+            return "";
+        }
+    }
+
     logan << LERROR << "Client requested " << request.path << " using " << request.request_type
           << " and there is nothing here.";
     things.http_return = 500;
@@ -111,7 +137,8 @@ void admin_interface::clear_old_links() {
     dlib::statement st(db, "delete from `files` where `limit_type` = 'C' and`dl_counter` <= 0");
     st.exec();
 
-    dlib::statement st1(db, "delete from `files` where `limit_type` = 'T' and `limit_timestamp` - strftime('%s','now') <= 0");
+    dlib::statement st1(db,
+                        "delete from `files` where `limit_type` = 'T' and `limit_timestamp` - strftime('%s','now') <= 0");
     st1.exec();
 
 }
