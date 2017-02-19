@@ -78,6 +78,8 @@ std::string admin_interface::on_request(dlib::incoming_things &request, dlib::ou
     }
 
     if (request.path == "/admin?links" && request.request_type == "GET") {
+        clear_old_links();
+
         std::vector<file_record> files;
         get_list_registered_files(db, files);
         std::stringstream ss;
@@ -104,3 +106,12 @@ std::string admin_interface::on_request(dlib::incoming_things &request, dlib::ou
 
 admin_interface::admin_interface(dlib::database &database, server_config &svr_config)
         : db(database), root_dir(svr_config.root_path), svr_cfg(svr_config) {}
+
+void admin_interface::clear_old_links() {
+    dlib::statement st(db, "delete from `files` where `limit_type` = 'C' and`dl_counter` <= 0");
+    st.exec();
+
+    dlib::statement st1(db, "delete from `files` where `limit_type` = 'T' and `limit_timestamp` - strftime('%s','now') <= 0");
+    st1.exec();
+
+}

@@ -17,6 +17,7 @@ private:
     dlib::database &db;
     dlib::directory root_dir;
     server_config &svr_cfg;
+    void clear_old_links();
 public:
     admin_interface(dlib::database &database, server_config &svr_config);
 };
