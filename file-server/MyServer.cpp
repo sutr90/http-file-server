@@ -103,7 +103,7 @@ void MyServer::on_request(const incoming_things &incoming, outgoing_things &, re
 }
 
 MyServer::MyServer(server_config &config) : chunk_size(config.chunk_size),
-                                            buffer(new char[chunk_size]),
+                                            buffer(new char[chunk_size]), //TODO zmenit na vector
                                             t(config.max_speed, chunk_size),
                                             db(config.db_path),
                                             fileguard(db),

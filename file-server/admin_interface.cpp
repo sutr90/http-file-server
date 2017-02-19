@@ -4,6 +4,7 @@
 #include "dir_utils.h"
 #include "../url-generator/url_generator.h"
 #include "MyServer.h"
+#include "mime_type_detector.h"
 
 const dlib::logger logan("L.admin");
 
@@ -109,8 +110,8 @@ std::string admin_interface::on_request(dlib::incoming_things &request, dlib::ou
             std::ifstream t(file.full_name());
             std::stringstream buffer;
             buffer << t.rdbuf();
-            //TODO fix mime type
-            things.headers["Content-Type"] = "text/css";
+
+            things.headers["Content-Type"] = mime_type_detector::get_mime_type(dlib::split_on_last(file.name(), ".").second);
 
             logan << LINFO << "Serving " << file.full_name() << " to client";
             return buffer.str();

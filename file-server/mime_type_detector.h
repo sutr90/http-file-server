@@ -9,10 +9,12 @@
 
 class mime_type_detector {
 private:
-    std::map<std::string, std::string> ext_to_mime;
+    static std::map<std::string, std::string> ext_to_mime;
+    static bool initialized;
+    static void init();
+    mime_type_detector() {};
 public:
-    mime_type_detector();
-    std::string get_mime_type(const std::string &extension);
+    static std::string get_mime_type(const std::string &extension);
 };
 
 

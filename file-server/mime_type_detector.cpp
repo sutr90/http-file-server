@@ -6,7 +6,20 @@
 #include <dlib/string.h>
 #include "mime_type_detector.h"
 
-mime_type_detector::mime_type_detector() {
+std::string mime_type_detector::get_mime_type(const std::string &extension) {
+    if (!initialized) {
+        init();
+    }
+
+    auto it = ext_to_mime.find(extension);
+    if (it != ext_to_mime.end()) {
+        return it->second;
+    }
+
+    return "";
+}
+
+void mime_type_detector::init() {
     std::ifstream file("mime.types");
     std::string str;
     while (std::getline(file, str)) {
@@ -22,13 +35,9 @@ mime_type_detector::mime_type_detector() {
             ext_to_mime.insert({*it, mime});
         }
     }
+
+    mime_type_detector::initialized = true;
 }
 
-std::string mime_type_detector::get_mime_type(const std::string &extension) {
-    auto it = ext_to_mime.find(extension);
-    if (it != ext_to_mime.end()){
-        return it->second;
-    }
-
-    return "";
-}
+std::map<std::string, std::string> mime_type_detector::ext_to_mime;
+bool mime_type_detector::initialized;
