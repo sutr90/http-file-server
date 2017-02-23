@@ -15,7 +15,7 @@ struct file_record {
 
 std::string register_file(dlib::database &db, options &opt, const std::string &user_id);
 
-void unregister_file(dlib::database &db, options &opt);
+void unregister_file(dlib::database &db, std::string &file_id);
 
 void list_registered_files(dlib::database &db);
 

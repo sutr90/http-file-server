@@ -73,9 +73,9 @@ void list_registered_files(dlib::database &db) {
 
 }
 
-void unregister_file(dlib::database &db, options &opt) {
+void unregister_file(dlib::database &db, string &file_id) {
     dlib::statement st(db, "delete from `files` where `file_id` = ? COLLATE NOCASE");
-    st.bind(1, opt.file_name);
+    st.bind(1, file_id);
     st.exec();
 }
 
