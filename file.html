@@ -82,9 +82,12 @@
 
         .number {
             text-align: right;
-            padding-right: 5px;
             min-width: 50px;
             flex-grow: 1;
+        }
+
+        .offset {
+            padding-right: 5px;
         }
 
         .size {
@@ -246,7 +249,7 @@
             }
 
             if (item.type === 'file') {
-                $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap" title="' + item.name + '"><div class="col-xs-1 icon"><span class="glyphicon glyphicon-file"></span></div><div class="col-xs-7 col-sm-5">' + item.name + '</div><div class="col-sm-4 hidden-xs">' + date + '</div><div class="col size"><div  class="number">' + size + '</div><div class="unit">' + unit + '</div></div></div>'));
+                $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap" title="' + item.name + '"><div class="col-xs-1 icon"><span class="glyphicon glyphicon-file"></span></div><div class="col-xs-7 col-sm-5">' + item.name + '</div><div class="col-sm-4 hidden-xs">' + date + '</div><div class="col size"><div class="number offset">' + size + '</div><div class="unit">' + unit + '</div></div></div>'));
             } else if (item.type === 'dir' && item.name !== '..') {
                 $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap" title="' + item.name + '"><div class="col-xs-1 icon"><span class="glyphicon glyphicon-folder-open"></span></div><div class="col-xs-7 col-sm-5">' + item.name + '</div><div class="col-sm-4 hidden-xs">' + date + '</div><div class="col"></div></div>'));
             } else {
@@ -269,10 +272,10 @@
         $.each(links, function (key, item) {
             $("#links").append($(
                 '<div id="link_' + key + '" class="item row text-nowrap" title="' + item.file_id + '">' +
-                '<div class="col-sm-3 col-xs-6">' + item.file_id + '</div>' +
-                '<div class="col-sm-6 hidden-xs">' + item.path + '</div>' +
-                ((item.limit_type == 'C') ? '<div class="col-sm-2 number">' + item.dl_counter + 'x</div>' : '<div class="col-sm-2 number">' + Math.round(item.time_limit / 60) + ' min</div>') +
-                '<button id="delete_'+key+'" class="col-xs-1 icon glyphicon glyphicon-trash"></button>'+
+                '<div class="col-sm-3 col-xs-8">' + item.file_id + '</div>' +
+                '<div class="col-sm-7 hidden-xs">' + item.path + '</div>' +
+                ((item.limit_type == 'C') ? '<div class="col-sm-1 col-xs-2 number">' + item.dl_counter + 'x</div>' : '<div class="col-sm-1 col-xs-2 number">' + Math.round(item.time_limit / 60) + ' min</div>') +
+                '<div class="col-xs-2 col-sm-1"><button id="delete_'+key+'" class="icon glyphicon glyphicon-trash"></button></div>'+
                 '</div>'));
 
             $("#delete_" + key).click(function (event) {
