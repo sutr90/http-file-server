@@ -100,6 +100,16 @@ std::string admin_interface::on_request(dlib::incoming_things &request, dlib::ou
         return ss.str();
     }
 
+    if (request.path == "/admin/delete" && request.request_type == "POST") {
+        logan << LINFO << "Client requested " << request.path << " using POST";
+        std::string file_id = request.queries["id"];
+
+        unregister_file(db, file_id);
+
+        logan << LINFO << "Deleted file: " << file_id;
+        return "";
+    }
+
     logan << LERROR << "Client requested " << request.path << " using " << request.request_type
           << " and there is nothing here.";
     things.

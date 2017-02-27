@@ -14,7 +14,7 @@ int main(int argc, char **argv) {
     database db(cr["db_path"]);
 
     if (opt.type == option_type::OPT_REMOVE) {
-        unregister_file(db, opt);
+        unregister_file(db, opt.file_name);
         cout << "Download link with id " << opt.file_name << " was removed.";
     } else if (opt.type == option_type::OPT_LIST) {
         list_registered_files(db);
