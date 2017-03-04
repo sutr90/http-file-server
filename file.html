@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -14,102 +14,18 @@
     <link rel="stylesheet" href="res/bootstrap-theme.min.css">
 
 
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <script src="res/html5shiv.min.js"></script>
-    <script src="res/respond.min.js"></script>
-    <![endif]-->
-
     <style type="text/css">
-        <!--
-        .item > div {
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
+        [ng-click],
+        [data-ng-click],
+        [x-ng-click] {
+            cursor: pointer;
         }
-
-        .item:hover, .tab-gen, .tab-links {
-            cursor: pointer
-        }
-
-        .col-xs-1.icon {
-            width: 35px;
-        }
-
-        .disabled {
-            z-index: 999;
-            opacity: 0.6;
-            pointer-events: none;
-        }
-
-        .loader-space {
-            display: none;
-            position: absolute;
-            right: 80px;
-        }
-
-        .loader {
-            position: absolute;
-            border: 16px solid #f3f3f3;
-            border-top: 16px solid #d1d1d1;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            margin-left: auto;
-            animation: spin 2s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        .page {
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            border-top-left-radius: 0;
-            border-top-right-radius: 0;
-            border-top: none;
-            padding: 16px;
-            padding-bottom: 0
-        }
-
-        .number {
-            text-align: right;
-            min-width: 50px;
-            flex-grow: 1;
-        }
-
-        .offset {
-            padding-right: 5px;
-        }
-
-        .size {
-            display: flex;
-        }
-
-        .unit {
-            text-align: left;
-            width: 35px;
-        }
-
-        .highlight-row {
-            outline: 1px solid #6666FFaa;
-            background: lightcyan;
-        }
-
-        -->
     </style>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 </head>
-
 <body>
+
 <div class="row centered-form center-block">
     <div class="container col-md-6 col-md-offset-3">
         <div class="page-header">
@@ -121,24 +37,27 @@
             <li><a class="tab-links">Aktivní url</a></li>
         </ul>
 
-        <div class="page">
+        <div class="page" ng-app="MyApp" ng-controller="MyCtrl">
 
             <div id="result"></div>
 
             <div class="page-gen">
 
                 <form id="form">
+
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group input-group-count">
+
                                 <label for="count">Počet stažení</label>
                                 <div class="input-group">
-                    <span class="input-group-addon">
-                      <input type="radio" checked name="type" value="count"/>
-                    </span>
+            <span class="input-group-addon">
+                <input type="radio" checked name="type" value="count"/>
+            </span>
                                     <input type="number" name="count" min="1" max="100000" value="5"
                                            class="form-control"/>
                                 </div>
+
                                 <span style="display:none" class="help-block">Počet musí být v intervalu &lt;1,100000&gt;</span>
                             </div>
                         </div>
@@ -146,291 +65,110 @@
                             <div class="form-group input-group-expire">
                                 <label for="expire">Doba platnosti</label>
                                 <div class="input-group">
-                    <span class="input-group-addon">
-                      <input type="radio" name="type" value="expire"/>
-                    </span>
+                <span class="input-group-addon">
+                    <input type="radio" name="type" value="expire"/>
+                </span>
                                     <input type="time" name="expire" value="01:00" disabled class="form-control"/>
                                 </div>
                                 <span style="display:none" class="help-block">Platnost musí být ve formátu HH:SS.</span>
                             </div>
                         </div>
                     </div>
+
                     <div class="row">
                         <div class="col-lg-12">
                             <div class="form-group input-group-path">
                                 <label for="path">Cesta k souboru</label>
                                 <div class="input-group">
                                     <span class="input-group-addon item" id="prefix"></span>
-                                    <input type="text" name="path" class="form-control"/>
+                                    <input type="text" name="path" class="form-control" ng-model="cwd"></input>
                                     <span class="input-group-btn">
-                      <button class="btn btn-default" name="go"
-                              data-loading-text="<i class='glyphicon glyphicon-refresh gly-spin'></i> Vygeneruj"
-                              type="button">Vygeneruj</button>
-                    </span>
+                    <button class="btn btn-default" name="go"
+                            data-loading-text="<i class='glyphicon glyphicon-refresh gly-spin'></i> Vygeneruj"
+                            type="button">Vygeneruj</button>
+                </span>
                                 </div>
                                 <span style="display:none" class="help-block">Nebyla vyplněna cesta k souboru.</span>
                             </div>
                         </div>
                     </div>
+
                 </form>
+
                 <div class="panel panel-default">
                     <div class="panel-body" id="files">
                         <div class="loader-space">
                             <div class="loader"></div>
                         </div>
-                        <br/><br/>
+                        <table>
+                            <tr ng-click="linkOnClick($event, link)" ng-repeat="link in links"
+                                ng-class="{{ 'link.type' }}">
+                                <td>{{ link.name }}</td>
+                                <td>{{ link.type }}</td>
+                                <td>{{ link.size | fileSize }}</td>
+                                <td>{{link.date?(link.date * 1000 | date:'yyyy-MM-dd HH:mm:ss'):"" }}</td>
+                            </tr>
+                        </table>
                     </div>
                 </div>
             </div>
-
-
-            <div style="display: none" class="page-links">
-                <div class="panel panel-default">
-                    <div class="panel-body" id="links">
-                        <div class="loader-space">
-                            <div class="loader"></div>
-                        </div>
-                        <br/><br/>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 </div>
 
-<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-<script src="res/jquery.min.js"></script>
-<script src="res/jquery-ui.min.js"></script>
-
-<!-- Latest compiled and minified JavaScript -->
-<script src="res/bootstrap.min.js"></script>
-
-<script src="res/clipboard.min.js"></script>
 
 <script>
+    var GLOBAL_PATH = "/home/vf/"
 
-    const GLOBAL_PATH = '__GLOBAL_PATH__';
+    var app = angular.module('MyApp', []);
 
-    const FADE_SPEED = 150;
-
-    var lastDirectory;
-
-    function setUrl(url) {
-        url = url.replace(GLOBAL_PATH, '');
-        $('input[name="path"]').val(url);
-    }
-
-    function pasteFiles(files) {
-        $('#files').empty();
-        $.each(files, function (key, item) {
-
-            var date = '';
-            if (item.date !== null) {
-                date = new Date(item.date * 1000).toISOString().slice(0, 19).replace('T', ' ');
-            }
-
-            var size = '';
-            var unit = '';
-            if (item.size !== null) {
-                if (item.size > 1024 * 1024 * 1024) {
-                    size = Math.round(item.size / (1024 * 1024 * 1024) * 100) / 100;
+    app.filter('fileSize', function () {
+        return function (x) {
+            if (x !== null) {
+                var size, unit;
+                if (x > 1024 * 1024 * 1024) {
+                    size = Math.round(x / (1024 * 1024 * 1024) * 100) / 100;
                     unit = 'GB';
-                } else if (item.size > 1024 * 1024) {
-                    size = Math.round(item.size / (1024 * 1024) * 100) / 100;
+                } else if (x > 1024 * 1024) {
+                    size = Math.round(x / (1024 * 1024) * 100) / 100;
                     unit = 'MB';
-                } else if (item.size > 1024) {
-                    size = Math.round(item.size / 1024 * 100) / 100;
+                } else if (x > 1024) {
+                    size = Math.round(x / 1024 * 100) / 100;
                     unit = 'kB';
                 } else {
-                    size = item.size;
+                    size = x;
                     unit = 'B';
                 }
+
+                return size + " " + unit;
             }
 
-            if (item.type === 'file') {
-                $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap" title="' + item.name + '"><div class="col-xs-1 icon"><span class="glyphicon glyphicon-file"></span></div><div class="col-xs-7 col-sm-5">' + item.name + '</div><div class="col-sm-4 hidden-xs">' + date + '</div><div class="col size"><div class="number offset">' + size + '</div><div class="unit">' + unit + '</div></div></div>'));
-            } else if (item.type === 'dir' && item.name !== '..') {
-                $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap" title="' + item.name + '"><div class="col-xs-1 icon"><span class="glyphicon glyphicon-folder-open"></span></div><div class="col-xs-7 col-sm-5">' + item.name + '</div><div class="col-sm-4 hidden-xs">' + date + '</div><div class="col"></div></div>'));
-            } else {
-                $("#files").append($('<div id="item_' + key + '" class="item row text-nowrap"><div class="col-xs-1 icon"><span class="glyphicon glyphicon-folder-open"></span></div><div class="col-xs-10">..</div></div>'));
-            }
-            $("#item_" + key).click(function () {
-                setUrl(item.path);
-                if (item.type === 'dir') {
-                    loadDir(item.path);
-                } else {
-                    $('div[id^="item_"]').removeClass("highlight-row");
-                    $(this).addClass("highlight-row");
-                }
-            });
-        });
-    }
-
-    function pasteLinks(links) {
-        $('#links').empty();
-        $.each(links, function (key, item) {
-            $("#links").append($(
-                '<div id="link_' + key + '" class="item row text-nowrap" title="' + item.file_id + '">' +
-                '<div class="col-sm-3 col-xs-8">' + item.file_id + '</div>' +
-                '<div class="col-sm-7 hidden-xs">' + item.path + '</div>' +
-                ((item.limit_type == 'C') ? '<div class="col-sm-1 col-xs-2 number">' + item.dl_counter + 'x</div>' : '<div class="col-sm-1 col-xs-2 number">' + Math.round(item.time_limit / 60) + ' min</div>') +
-                '<div class="col-xs-2 col-sm-1"><button id="delete_'+key+'" class="icon glyphicon glyphicon-trash"></button></div>'+
-                '</div>'));
-
-            $("#delete_" + key).click(function (event) {
-                event.stopPropagation();
-                $.post("admin/delete", {id: item.file_id}).fail(function () {
-                    $('#result').slideDown().hide("fade", FADE_SPEED, function () {
-                        $(this).empty();
-                        $("#result").append($('<div class="alert alert-danger" role="alert">Nepodařilo se smazat odkaz ke stažení</div>'))
-                            .show("fade", FADE_SPEED);
-                    });
-                }).always(function () {
-                    loadLinks();
-                });
-            });
-            $("#link_" + key).click(function () {
-                displayDownloadURL(item.file_id);
-            });
-        });
-
-    }
-
-    function loadDir(path) {
-        lastDirectory = path;
-        path = path.replace(GLOBAL_PATH, '');
-        $("#files").addClass('disabled');
-        $("#files .loader-space").css('display', 'block');
-        $.getJSON("?path=" + encodeURIComponent(path), function (data) {
-            pasteFiles(data);
-        }).error(function () {
-            $('#files').empty();
-            $("#files").append($('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">Error:</span> Nastal problém při načítání <strong>' + path + '</strong>'));
-        }).always(function () {
-            $("#files").prepend($('<div class="loader-space"><div class="loader"></div></div>'));
-            $("#files").removeClass('disabled');
-            $("#files .loader-space").css('display', 'none');
-        });
-    }
-
-    function loadLinks() {
-        $("#links").addClass('disabled');
-        $("#links .loader-space").css('display', 'block');
-        $.getJSON("?links", function (data) {
-            pasteLinks(data);
-        }).error(function () {
-            $('#links').empty();
-            $("#links").append($('<span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span><span class="sr-only">Error:</span> Nastal problém při načítání <strong>odkazů</strong>'));
-        }).always(function () {
-            $("#links").prepend($('<div class="loader-space"><div class="loader"></div></div>'));
-            $("#links").removeClass('disabled');
-            $("#links .loader-space").css('display', 'none');
-        });
-    }
-
-    function displayDownloadURL(file_id){
-        $('#result').slideDown().hide("fade", FADE_SPEED, function () {
-            var url = document.URL.replace(new RegExp('/admin.*$'), "/" + file_id);
-            $(this).empty();
-            $("#result").append($('<div class="alert alert-success" role="alert"><div class="input-group"><input readonly type="text" id="url" class="form-control" value="' + url + '" /><span class="input-group-btn"><button class="btn btn-default" data-clipboard-target="#url" type="button"><span class="glyphicon glyphicon-copy"></span></button></span></div></div>'))
-                .show("fade", FADE_SPEED);
-        });
-    }
-
-    $(document).ready(function () {
-        new Clipboard('.btn');
-
-        $("input:radio[name='type']").change(
-            function () {
-                if ($(this).is(":checked") && $(this).val() == 'count') {
-                    $('input[name="expire"]').prop('disabled', true);
-                    $('input[name="count"]').prop('disabled', false);
-                } else {
-                    $('input[name="expire"]').prop('disabled', false);
-                    $('input[name="count"]').prop('disabled', true);
-                }
-            });
-
-        $("button[name='go']").click(function () {
-            var path = $('input[name="path"]').val();
-            var type = $('input[name="type"]:checked').val();
-            var expire = $('input[name="expire"]').val();
-            var count = parseInt($('input[name="count"]').val());
-
-            $(".input-group-path").removeClass('has-error');
-            $(".input-group-path .help-block").hide('fade', FADE_SPEED);
-            $(".input-group-count").removeClass('has-error');
-            $(".input-group-count .help-block").hide('fade', FADE_SPEED);
-            $(".input-group-expire").removeClass('has-error');
-            $(".input-group-expire .help-block").hide('fade', FADE_SPEED);
-
-            var ok = true;
-
-            if (path == null || path.trim().length < 1) {
-                ok = false;
-                $(".input-group-path").addClass('has-error');
-                $(".input-group-path .help-block").show('fade', FADE_SPEED);
-            }
-
-            if (count == NaN || count == Infinity || count < 1 || count > 100000) {
-                ok = false;
-                $(".input-group-count").addClass('has-error');
-                $(".input-group-count .help-block").show('fade', FADE_SPEED);
-            }
-
-
-            var expireData = expire.split(":");
-            if (expireData.length != 2 || parseInt(expireData[0]) < 0 || parseInt(expireData[0]) > 23 || parseInt(expireData[1]) < 0 || parseInt(expireData[1]) > 59 || (parseInt(expireData[0]) == 0 && parseInt(expireData[1]) == 0)) {
-                ok = false;
-                $(".input-group-expire").addClass('has-error');
-                $(".input-group-expire .help-block").show('fade', FADE_SPEED);
-            }
-
-            if (ok) {
-
-                var $btn = $(this).button('loading');
-
-                $.post("admin", {path: path, type: type, expire: expire, count: count}).done(function (data) {
-                    displayDownloadURL(data);
-                }).fail(function () {
-                    $('#result').slideDown().hide("fade", FADE_SPEED, function () {
-                        $(this).empty();
-                        $("#result").append($('<div class="alert alert-danger" role="alert">Nepodařilo se vygenerovat odkaz ke stažení</div>'))
-                            .show("fade", FADE_SPEED);
-                    });
-                }).always(function () {
-                    $btn.button('reset');
-                });
-
-            }
-        });
-
-        $("#prefix").click(function () {
-            loadDir(GLOBAL_PATH);
-            setUrl(GLOBAL_PATH);
-        }).append(GLOBAL_PATH);
-
-        $(".tab-gen").click(function () {
-            $(this).parent().addClass("active");
-            $(".tab-links").parent().removeClass("active");
-            $(".page-links").css("display", "none");
-            $(".page-gen").css("display", "block");
-            loadDir(lastDirectory);
-            setUrl(lastDirectory);
-        });
-
-        $(".tab-links").click(function () {
-            $(this).parent().addClass("active");
-            $(".tab-gen").parent().removeClass("active");
-            $(".page-gen").css("display", "none");
-            $(".page-links").css("display", "block");
-            loadLinks();
-        });
-
-        loadDir(GLOBAL_PATH);
-
+            return "";
+        };
     });
+
+    app.controller('MyCtrl', ['$scope', '$http', function ($scope, $http) {
+        $scope.cwd = GLOBAL_PATH;
+        getLinks($scope.cwd);
+
+        function getLinks(_path) {
+            _path = _path.replace(GLOBAL_PATH, '');
+            $http.get("admin", {params: {path: _path}}).then(function mySucces(response) {
+                $scope.links = response.data;
+            }, function myError(response) {
+                $scope.links = response.statusText;
+            })
+        };
+
+
+        $scope.linkOnClick = function ($event, link) {
+            $scope.cwd = link.path
+            if (link.type == "dir") {
+                getLinks($scope.cwd);
+            }
+        }
+    }]);
 </script>
+
 </body>
 </html>
