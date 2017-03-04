@@ -58,6 +58,45 @@
             padding: 16px;
             padding-bottom: 0
         }
+
+        .glyphicon.spinning {
+            animation: spin 2s infinite linear;
+            -webkit-animation: spin2 2s infinite linear;
+            font-size: 3em;
+        }
+
+        @keyframes spin {
+            from { transform: scale(1) rotate(0deg); }
+            to { transform: scale(1) rotate(360deg); }
+        }
+
+        @-webkit-keyframes spin2 {
+            from { -webkit-transform: rotate(0deg); }
+            to { -webkit-transform: rotate(360deg); }
+        }
+
+        .panel{
+            position: relative;
+        }
+
+        .loader-space {
+            background: lightgray;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            position: absolute;
+            padding: 0;
+            opacity: 0.5;
+        }
+        /* line 25, ../sass/style.scss */
+        .loader-space span {
+            color: #fff;
+            text-align: center;
+            margin-left: auto;
+            left: 50%;
+            top:5%;
+        }
     </style>
 
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
@@ -125,8 +164,8 @@
         </form>
 
         <div class="panel panel-default panel-body">
-            <div class="loader-space">
-                <div class="loader"></div>
+            <div class="loader-space" ng-show="loading">
+                <span class="glyphicon glyphicon-refresh spinning"></span>
             </div>
             <table style="width: 100%">
                 <tr ng-click="linkOnClick($event, link)" ng-repeat="link in links" class="row">
@@ -186,17 +225,25 @@
         };
     });
 
-    app.controller('MyCtrl', ['$scope', '$http', function ($scope, $http) {
+    app.controller('MyCtrl', ['$scope', '$http', '$timeout', function ($scope, $http, $timeout) {
         $scope.root = GLOBAL_PATH;
         $scope.cwd = '';
         getLinks($scope.cwd);
+        var timer;
 
         function getLinks(_path) {
-            $http.get("admin", {params: {path: _path}}).then(function mySucces(response) {
+            timer = $timeout(function () {
+                $scope.loading = true;
+            }, 200);
+
+            $http.get("admin", {params: {path: _path}}).then(function(response) {
                 $scope.links = response.data;
             }, function myError(response) {
                 $scope.links = response.statusText;
-            })
+            }).finally(function () {
+                $timeout.cancel(timer);
+                $scope.loading = false;
+            });
         }
 
         $scope.linkOnClick = function ($event, link) {
