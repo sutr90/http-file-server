@@ -125,9 +125,9 @@
                     <label for="count">Počet stažení</label>
                     <div class="input-group">
                             <span class="input-group-addon">
-                                <input type="radio" checked name="type" value="count"/>
+                                <input type="radio" checked value="count" ng-model="expireType"/>
                             </span>
-                        <input type="number" name="count" min="1" max="100000" value="5" class="form-control"/>
+                        <input type="number" id="count" min="1" max="100000" value="5" class="form-control" ng-disabled="expireType != 'count'"/>
                     </div>
 
                     <span style="display:none" class="help-block">Počet musí být v intervalu &lt;1,100000&gt;</span>
@@ -137,9 +137,9 @@
                     <label for="expire">Doba platnosti</label>
                     <div class="input-group">
                             <span class="input-group-addon">
-                                <input type="radio" name="type" value="expire"/>
+                                <input type="radio" value="timer" ng-model="expireType"/>
                             </span>
-                        <input type="time" name="expire" value="01:00" disabled class="form-control"/>
+                        <input type="time" id="expire" value="01:00" disabled class="form-control"  ng-disabled="expireType != 'timer'"/>
                     </div>
                     <span style="display:none" class="help-block">Platnost musí být ve formátu HH:SS.</span>
                 </div>
@@ -150,7 +150,7 @@
                     <label for="path">Cesta k souboru</label>
                     <div class="input-group">
                         <span class="input-group-addon item" id="prefix" ng-bind="::root" ng-click="resetPath()"></span>
-                        <input type="text" name="path" class="form-control" ng-model="cwd"/>
+                        <input type="text" id="path" class="form-control" ng-model="cwd"/>
                         <span class="input-group-btn">
                                 <button class="btn btn-default" name="go"
                                         data-loading-text="<i class='glyphicon glyphicon-refresh gly-spin'></i> Vygeneruj"
@@ -228,6 +228,8 @@
     app.controller('MyCtrl', ['$scope', '$http', '$timeout', function ($scope, $http, $timeout) {
         $scope.root = GLOBAL_PATH;
         $scope.cwd = '';
+        $scope.expireType = 'count';
+
         getLinks($scope.cwd);
         var timer;
 
