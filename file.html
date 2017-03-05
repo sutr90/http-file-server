@@ -117,7 +117,7 @@
 
         <div id="result"></div>
 
-        <form id="form">
+        <form id="form" name="myForm">
 
             <div class="row">
                 <div class="col-md-6 form-group input-group-count">
@@ -127,10 +127,10 @@
                             <span class="input-group-addon">
                                 <input type="radio" checked value="count" ng-model="expireType"/>
                             </span>
-                        <input type="number" id="count" min="1" max="100000" value="5" class="form-control" ng-disabled="expireType != 'count'"/>
+                        <input type="number" id="count" min="1" max="100000" value="5" class="form-control" name="expireCount" ng-disabled="expireType != 'count'" ng-model="expireCount" required/>
                     </div>
 
-                    <span style="display:none" class="help-block">Počet musí být v intervalu &lt;1,100000&gt;</span>
+                    <span class="help-block" ng-show="myForm.expireCount.$invalid && expireType == 'count'">Počet musí být v intervalu &lt;1,100000&gt;</span>
                 </div>
 
                 <div class="col-md-6 form-group input-group-expire">
@@ -139,9 +139,9 @@
                             <span class="input-group-addon">
                                 <input type="radio" value="timer" ng-model="expireType"/>
                             </span>
-                        <input type="time" id="expire" value="01:00" disabled class="form-control"  ng-disabled="expireType != 'timer'"/>
+                        <input type="time" id="expire" value="01:00" disabled class="form-control"  ng-disabled="expireType != 'timer'" name="expireTime" ng-model="expireTime" ng-pattern="/\d{2}:[0-5][0-9]/" required/>
                     </div>
-                    <span style="display:none" class="help-block">Platnost musí být ve formátu HH:SS.</span>
+                    <span class="help-block" ng-show="myForm.expireTime.$invalid && expireType == 'timer'">Platnost musí být ve formátu HH:MM.</span>
                 </div>
             </div>
 
@@ -229,6 +229,8 @@
         $scope.root = GLOBAL_PATH;
         $scope.cwd = '';
         $scope.expireType = 'count';
+        $scope.expireCount = 5;
+        $scope.expireTime = '01:00';
 
         getLinks($scope.cwd);
         var timer;
