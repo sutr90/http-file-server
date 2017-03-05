@@ -139,7 +139,7 @@
                             <span class="input-group-addon">
                                 <input type="radio" value="timer" ng-model="expireType"/>
                             </span>
-                        <input type="time" id="expire" value="01:00" disabled class="form-control"  ng-disabled="expireType != 'timer'" name="expireTime" ng-model="expireTime" ng-pattern="/\d{2}:[0-5][0-9]/" required/>
+                        <input type="text" id="expire" value="01:00" disabled class="form-control"  ng-disabled="expireType != 'timer'" name="expireTime" ng-model="expireTime" ng-pattern="/\d{2}:[0-5][0-9]/" required/>
                     </div>
                     <span class="help-block" ng-show="myForm.expireTime.$invalid && expireType == 'timer'">Platnost musí být ve formátu HH:MM.</span>
                 </div>
@@ -150,14 +150,12 @@
                     <label for="path">Cesta k souboru</label>
                     <div class="input-group">
                         <span class="input-group-addon item" id="prefix" ng-bind="::root" ng-click="resetPath()"></span>
-                        <input type="text" id="path" class="form-control" ng-model="cwd"/>
+                        <input type="text" id="path" class="form-control" name="cwd" ng-model="cwd" required/>
                         <span class="input-group-btn">
-                                <button class="btn btn-default" name="go"
-                                        data-loading-text="<i class='glyphicon glyphicon-refresh gly-spin'></i> Vygeneruj"
-                                        type="button">Vygeneruj</button>
+                                <button class="btn btn-default" name="go" type="button" ng-click="submit()">Vygeneruj</button>
                             </span>
                     </div>
-                    <span style="display:none" class="help-block">Nebyla vyplněna cesta k souboru.</span>
+                    <span class="help-block" ng-show="myForm.cwd.$invalid && showValidationMessages">Nebyla vyplněna cesta k souboru.</span>
                 </div>
             </div>
 
@@ -231,6 +229,7 @@
         $scope.expireType = 'count';
         $scope.expireCount = 5;
         $scope.expireTime = '01:00';
+        $scope.showValidationMessages = false;
 
         getLinks($scope.cwd);
         var timer;
@@ -239,6 +238,8 @@
             timer = $timeout(function () {
                 $scope.loading = true;
             }, 200);
+
+            $scope.showValidationMessages = false;
 
             $http.get("admin", {params: {path: _path}}).then(function(response) {
                 $scope.links = response.data;
@@ -260,6 +261,11 @@
         $scope.resetPath = function () {
             $scope.cwd = '';
             getLinks($scope.cwd);
+        }
+
+        $scope.submit = function () {
+            $scope.showValidationMessages = true;
+            return false;
         }
     }]);
 </script>
